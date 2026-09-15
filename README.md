@@ -76,13 +76,20 @@ Entregue também o `companhia_aerea_voos.csv`.
 
 ---
 
-## Se algo não sincronizar
+## Se algo der errado
 
 | Sintoma | Causa provável | O que fazer |
 |---|---|---|
-| Itens não aparecem após o sync | Pasta errada na configuração do Git | Confirme que `CompanhiaAerea.Report/` está na raiz do repo (ou ajuste o campo Pasta) |
-| Erro "arquivo não encontrado" no refresh | `pUrlOneDrive` incorreto | Deve terminar com `/` e ser a raiz, não o link do arquivo |
-| Falha de credencial | Fonte não autenticada | Configurações do semantic model → Editar credenciais → OAuth2 |
-| Tema não aplicou | Custom theme não carregou | Exibir → Temas → Procurar temas → `StaticResources/RegisteredResources/tema-executivo.json` |
+| Refresh falha com "arquivo não encontrado" | O repositório voltou a ser privado | A URL raw precisa de acesso anônimo — torne o repo público ou troque a fonte |
+| Refresh falha com "column does not exist in the rowset" | `sourceColumn` usa o nome anterior ao rename no Power Query | Conferir o nome **depois** do `Table.RenameColumns` |
+| Import rejeitado com `Property 'description' is unknown` | Um comentário `///` acima de um `relationship` | Descrição só vale em tabela, coluna, medida e parâmetro |
+| Relatório abre em branco, com skeleton infinito | Schemas do PBIR em versão antiga | Ver a tabela de versões em `ROTEIRO-GERAR-PAINEL.md` |
+| Credencial da fonte | Web anônima, sem gateway | Configurações do semantic model → Editar credenciais → Anônimo |
 
-As cores de cada gráfico estão definidas visual a visual, então o dashboard fica correto mesmo se o tema não carregar.
+As cores de cada gráfico estão definidas visual a visual, então o dashboard fica correto
+mesmo que o tema base não carregue.
+
+## Reproduzir este processo
+
+`ROTEIRO-GERAR-PAINEL.md` descreve o pipeline completo, do enunciado ao painel publicado,
+com as armadilhas de formato que falham em silêncio.

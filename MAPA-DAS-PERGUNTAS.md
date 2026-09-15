@@ -25,9 +25,9 @@ O exercício exige **no mínimo 8 perguntas**. Este dashboard responde **as 15**
 | Exigido | Entregue |
 |---|---|
 | Dataset próprio, mínimo 5.000 registros | 6.200 voos, 370 rotas, 20 aeroportos, 2 anos |
-| Importação e tratamento no Power BI | Power Query: tipagem por coluna, remoção de linhas vazias, dimensão de aeroportos derivada dos pares origem/destino |
+| Importação e tratamento no Power BI | Power Query: consulta de estágio única, tipagem por coluna, remoção de linhas vazias, seis dimensões derivadas da fonte |
 | Mínimo 8 perguntas respondidas | 15 |
-| Mínimo 8 visualizações | 20 gráficos + 29 cartões de KPI |
+| Mínimo 8 visualizações | 17 gráficos + 29 cartões de KPI |
 | Mínimo 3 tipos de gráfico | 9 tipos: rosca, linha, barras, colunas, combinado, mapa, dispersão, tabela, matriz |
 | Mínimo 3 KPIs em cartões | 29 cartões |
 | Mínimo 2 filtros/segmentadores | 8 segmentadores (2 por página analítica) |
