@@ -1,0 +1,85 @@
+/// Dimensao das unidades da rede, com municipio e coordenadas para o mapa.
+table dHospital
+	lineageTag: ea0fc842-0d0c-49b2-ab21-d4cc6e080e02
+
+	/// Nome da unidade hospitalar
+	column Hospital
+		dataType: string
+		isKey
+		lineageTag: 94a75a71-96fc-4ca7-9d01-e6ef0beb48eb
+		summarizeBy: none
+		sourceColumn: Hospital
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Municipio onde a unidade esta instalada
+	column Cidade
+		dataType: string
+		lineageTag: 7aac9822-c67d-413e-8dcd-fe8a5b4a64d7
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Cidade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Unidade federativa
+	column UF
+		dataType: string
+		lineageTag: 3425a81b-08cb-4370-906f-fa85e9786f6e
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: UF
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Rotulo no formato Unidade (Municipio)
+	column Unidade
+		dataType: string
+		lineageTag: 68e54721-bcfb-4806-abbe-196f80b5f633
+		summarizeBy: none
+		sourceColumn: Unidade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Latitude da unidade
+	column Latitude
+		dataType: double
+		lineageTag: 2c248681-e50c-407e-8683-49afa7380d7e
+		dataCategory: Latitude
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Longitude da unidade
+	column Longitude
+		dataType: double
+		lineageTag: 05122418-32b2-4c91-b51e-8c7ced05cb1a
+		dataCategory: Longitude
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dHospital = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"Hospital","Cidade","UF"} ), {"Hospital"} ),
+				    // Coordenadas atribuidas a cada unidade: o CSV de origem traz apenas Cidade e UF,
+				    // insuficiente para posicionar quatro unidades (tres delas no mesmo municipio).
+				    Geo = #table( type table [Hospital = text, Latitude = number, Longitude = number], {
+				        {"Hospital Central",  -15.7939, -47.8828},
+				        {"Hospital Norte",    -15.7330, -47.8830},
+				        {"Hospital Sul",      -15.8267, -47.9218},
+				        {"Hospital Regional", -15.8333, -48.0500}
+				    } ),
+				    ComGeo = Table.AddColumn( Unicos, "geo", each Table.SelectRows( Geo, (g) => g[Hospital] = [Hospital] ) ),
+				    Expandido = Table.ExpandTableColumn( ComGeo, "geo", {"Latitude","Longitude"} ),
+				    ComRotulo = Table.AddColumn( Expandido, "Unidade", each [Hospital] & " (" & [Cidade] & ")", type text ),
+				    Ordenado = Table.Sort( ComRotulo, {{"Hospital", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

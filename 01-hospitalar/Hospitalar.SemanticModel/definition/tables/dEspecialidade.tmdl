@@ -1,0 +1,52 @@
+/// Dimensao das especialidades medicas, agrupadas por bloco assistencial.
+table dEspecialidade
+	lineageTag: facb67fb-ec85-4013-af2c-f560d30e5cee
+
+	/// Area medica responsavel pelo atendimento
+	column Especialidade
+		dataType: string
+		isKey
+		lineageTag: 71e2154a-f5d4-413f-8234-9d014d524fbd
+		summarizeBy: none
+		sourceColumn: Especialidade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Agrupamento assistencial da especialidade — nivel superior do treemap
+	column Bloco
+		dataType: string
+		lineageTag: e9941b20-cb91-4206-8d38-832e31971d2a
+		summarizeBy: none
+		sourceColumn: Bloco
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordem de exibicao dos blocos
+	column 'Ordem Bloco'
+		dataType: int64
+		formatString: 0
+		lineageTag: 8e463edd-a02f-4443-b57f-7d4cb7d99a1a
+		summarizeBy: none
+		sourceColumn: Ordem Bloco
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dEspecialidade = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"Especialidade"} ) ),
+				    ComBloco = Table.AddColumn( Unicos, "Bloco", each
+				        if List.Contains( {"Clinica Medica","Clínica Médica","Cardiologia","Neurologia"}, [Especialidade] ) then "Clinicas"
+				        else if List.Contains( {"Cirurgia Geral","Ortopedia"}, [Especialidade] ) then "Cirurgicas"
+				        else if List.Contains( {"Pediatria","Ginecologia"}, [Especialidade] ) then "Materno-infantil"
+				        else "Ambulatoriais", type text ),
+				    ComOrdem = Table.AddColumn( ComBloco, "Ordem Bloco", each
+				        if [Bloco] = "Clinicas" then 1 else if [Bloco] = "Cirurgicas" then 2
+				        else if [Bloco] = "Materno-infantil" then 3 else 4, Int64.Type ),
+				    Ordenado = Table.Sort( ComOrdem, {{"Ordem Bloco", Order.Ascending}, {"Especialidade", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,39 @@
+relationship rel_calendario_atendimento
+	fromColumn: fAtendimento.Data_Atendimento
+	toColumn: dCalendario.Date
+
+relationship rel_hospital_atendimento
+	fromColumn: fAtendimento.Hospital
+	toColumn: dHospital.Hospital
+
+relationship rel_especialidade_atendimento
+	fromColumn: fAtendimento.Especialidade
+	toColumn: dEspecialidade.Especialidade
+
+relationship rel_diagnostico_atendimento
+	fromColumn: fAtendimento.Diagnostico
+	toColumn: dDiagnostico.Diagnostico
+
+relationship rel_procedimento_atendimento
+	fromColumn: fAtendimento.Procedimento
+	toColumn: dProcedimento.Procedimento
+
+relationship rel_tipo_atendimento
+	fromColumn: fAtendimento.Tipo_Atendimento
+	toColumn: dTipoAtendimento.Tipo
+
+relationship rel_convenio_atendimento
+	fromColumn: fAtendimento.Convenio
+	toColumn: dConvenio.Convenio
+
+relationship rel_desfecho_atendimento
+	fromColumn: fAtendimento.Desfecho
+	toColumn: dDesfecho.Desfecho
+
+relationship rel_paciente_atendimento
+	fromColumn: fAtendimento.Perfil_Paciente
+	toColumn: dPaciente.Perfil
+
+relationship rel_internacao_atendimento
+	fromColumn: fAtendimento.Internacao
+	toColumn: dInternacao.Internacao

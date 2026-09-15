@@ -1,0 +1,32 @@
+/// Host de onde o arquivo de dados e baixado.
+expression pUrlBase = "https://raw.githubusercontent.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: c40c80da-d3f3-4fe3-92db-f5221dfe7879
+	queryGroup: Parametros
+
+	annotation PBI_ResultType = Text
+
+/// Caminho do CSV dentro do repositorio, a partir da raiz do host.
+expression pCaminhoCSV = "guilhermelevi/visualizacao-dados-CEUB-2026/main/01-hospitalar/dados/hospital_atendimentos_100k.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: dbe8ad48-0d55-42c3-b831-2f908cdbfa48
+	queryGroup: Parametros
+
+	annotation PBI_ResultType = Text
+
+expression Fonte =
+		let
+		    // Consulta de estagio: le e tipa o arquivo UMA vez. A fato e as dez dimensoes
+		    // derivam daqui, entao o refresh baixa o CSV uma unica vez.
+		    Conteudo = Web.Contents( pUrlBase, [RelativePath = pCaminhoCSV] ),
+		    Origem = Csv.Document( Conteudo, [Delimiter = ";", Columns = 21, Encoding = 65001, QuoteStyle = QuoteStyle.Csv] ),
+		    Cabecalho = Table.PromoteHeaders( Origem, [PromoteAllScalars = true] ),
+		    // Cultura pt-BR: o arquivo usa virgula como separador decimal.
+		    Tipos = Table.TransformColumnTypes( Cabecalho, {{"Atendimento_ID", type text}, {"Data_Atendimento", type date}, {"Hospital", type text}, {"Cidade", type text}, {"UF", type text}, {"Sexo", type text}, {"Idade", Int64.Type}, {"Faixa_Etaria", type text}, {"Especialidade", type text}, {"Tipo_Atendimento", type text}, {"Diagnostico", type text}, {"Procedimento", type text}, {"Convenio", type text}, {"Tempo_Espera_Min", Int64.Type}, {"Duracao_Atendimento_Min", Int64.Type}, {"Internacao", type text}, {"Dias_Internacao", Int64.Type}, {"Valor_Procedimento", type number}, {"Custo_Hospitalar", type number}, {"Satisfacao_1a5", Int64.Type}, {"Desfecho", type text}}, "pt-BR" ),
+		    SemVazios = Table.SelectRows( Tipos, each [Atendimento_ID] <> null and [Atendimento_ID] <> "" ),
+		    // Chave do perfil demografico: Sexo x Faixa etaria, resolvida uma vez no estagio.
+		    ComPerfil = Table.AddColumn( SemVazios, "Perfil_Paciente", each [Sexo] & " " & [Faixa_Etaria], type text )
+		in
+		    ComPerfil
+	lineageTag: b035af67-0df5-4ee0-8f43-bcb3575bceb9
+	queryGroup: Estagio
+
+	annotation PBI_ResultType = Table

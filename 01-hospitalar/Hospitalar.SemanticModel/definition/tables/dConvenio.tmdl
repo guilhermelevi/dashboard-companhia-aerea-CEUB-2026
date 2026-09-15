@@ -1,0 +1,51 @@
+/// Dimensao das fontes pagadoras.
+table dConvenio
+	lineageTag: 14e4b2fe-5266-4b84-9ddf-af090365b340
+
+	/// Fonte pagadora do atendimento
+	column Convenio
+		dataType: string
+		isKey
+		lineageTag: 2f8fe373-288a-4b02-9bf5-61e435aaaf01
+		summarizeBy: none
+		sourceColumn: Convenio
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordem de exibicao
+	column Ordem
+		dataType: int64
+		formatString: 0
+		lineageTag: 02ae5421-c6de-4ad0-951a-df2986e96835
+		summarizeBy: none
+		sourceColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Publico, Suplementar ou Particular
+	column Natureza
+		dataType: string
+		lineageTag: bc9ac409-39be-4b9d-9726-65390dfd5ba2
+		summarizeBy: none
+		sourceColumn: Natureza
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dConvenio = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"Convenio"} ) ),
+				    ComOrdem = Table.AddColumn( Unicos, "Ordem", each
+				        if [Convenio] = "SUS" then 1 else if [Convenio] = "Particular" then 9 else 5, Int64.Type ),
+				    ComNatureza = Table.AddColumn( ComOrdem, "Natureza", each
+				        if [Convenio] = "SUS" then "Publico"
+				        else if [Convenio] = "Particular" then "Particular"
+				        else "Suplementar", type text ),
+				    Ordenado = Table.Sort( ComNatureza, {{"Ordem", Order.Ascending}, {"Convenio", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

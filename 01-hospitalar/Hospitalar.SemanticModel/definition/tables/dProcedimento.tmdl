@@ -1,0 +1,53 @@
+/// Dimensao dos procedimentos realizados, agrupados por natureza.
+table dProcedimento
+	lineageTag: d3e9be6e-e1ae-41db-a7c4-8c68f1b7ac26
+
+	/// Tipo de intervencao realizada
+	column Procedimento
+		dataType: string
+		isKey
+		lineageTag: 6e03447b-f705-4d41-a3f9-2c85b08da727
+		summarizeBy: none
+		sourceColumn: Procedimento
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Assistencial, Diagnostico ou Intervencao — nivel superior da matriz
+	column Natureza
+		dataType: string
+		lineageTag: c4a8748e-3388-4877-ab76-431cd8dc219e
+		summarizeBy: none
+		sourceColumn: Natureza
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordem de exibicao das naturezas
+	column 'Ordem Natureza'
+		dataType: int64
+		formatString: 0
+		lineageTag: dda97a2c-08e1-4807-a0db-6d5cfa5d5f2f
+		summarizeBy: none
+		sourceColumn: Ordem Natureza
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dProcedimento = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"Procedimento"} ) ),
+				    Diagnosticos = {"Exames laboratoriais","Ultrassonografia","Raio-X","ECG","Ecocardiograma",
+				                    "Exame neurológico","Tomografia","Exame oftalmológico","Biópsia"},
+				    Intervencoes = {"Procedimento","Procedimento ortopédico","Cirurgia"},
+				    ComNatureza = Table.AddColumn( Unicos, "Natureza", each
+				        if List.Contains( Diagnosticos, [Procedimento] ) then "Diagnostico"
+				        else if List.Contains( Intervencoes, [Procedimento] ) then "Intervencao"
+				        else "Assistencial", type text ),
+				    ComOrdem = Table.AddColumn( ComNatureza, "Ordem Natureza", each
+				        if [Natureza] = "Assistencial" then 1 else if [Natureza] = "Diagnostico" then 2 else 3, Int64.Type ),
+				    Ordenado = Table.Sort( ComOrdem, {{"Ordem Natureza", Order.Ascending}, {"Procedimento", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,251 @@
+/// Tabela fato: um registro por atendimento. Contem apenas chaves e metricas — todo atributo descritivo vive nas dimensoes.
+table fAtendimento
+	lineageTag: bb88e748-4b38-48f4-817d-e61188969ed2
+
+	/// Identificador unico do atendimento (chave degenerada)
+	column Atendimento_ID
+		dataType: string
+		lineageTag: 068989c2-c3d3-49b2-9204-d0eee74e3be4
+		summarizeBy: none
+		sourceColumn: Atendimento_ID
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Data do atendimento — chave para dCalendario
+	column Data_Atendimento
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: ab8e0b51-b41f-4ff8-be05-58238b919ee0
+		summarizeBy: none
+		sourceColumn: Data_Atendimento
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Unidade que realizou o atendimento — chave para dHospital
+	column Hospital
+		dataType: string
+		lineageTag: 53ac4d76-1533-42e2-b7d2-a266debfee5b
+		summarizeBy: none
+		sourceColumn: Hospital
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Area medica responsavel — chave para dEspecialidade
+	column Especialidade
+		dataType: string
+		lineageTag: 15b4470b-3964-4ee5-b619-85b970d7a0a8
+		summarizeBy: none
+		sourceColumn: Especialidade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Condicao clinica registrada — chave para dDiagnostico
+	column Diagnostico
+		dataType: string
+		lineageTag: b1c1601c-7b37-4795-9779-f95b5c853007
+		summarizeBy: none
+		sourceColumn: Diagnostico
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Intervencao realizada — chave para dProcedimento
+	column Procedimento
+		dataType: string
+		lineageTag: 2d5c963c-fc4e-4b2a-86e6-77b4d07e6ca2
+		summarizeBy: none
+		sourceColumn: Procedimento
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Carater do atendimento — chave para dTipoAtendimento
+	column Tipo_Atendimento
+		dataType: string
+		lineageTag: 8183ba81-af2b-4c42-bef8-9f59515e45ef
+		summarizeBy: none
+		sourceColumn: Tipo_Atendimento
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fonte pagadora — chave para dConvenio
+	column Convenio
+		dataType: string
+		lineageTag: e88810ec-775d-4984-ad20-5fd1e6c17784
+		summarizeBy: none
+		sourceColumn: Convenio
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Resultado do atendimento — chave para dDesfecho
+	column Desfecho
+		dataType: string
+		lineageTag: 585f06d8-19ba-4683-8f8a-9297604b7701
+		summarizeBy: none
+		sourceColumn: Desfecho
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Sexo e faixa etaria combinados — chave para dPaciente
+	column Perfil_Paciente
+		dataType: string
+		lineageTag: 062f8ed9-6a0c-4e9a-bb0e-422a357f7f84
+		summarizeBy: none
+		sourceColumn: Perfil_Paciente
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Houve internacao — chave para dInternacao
+	column Internacao
+		dataType: string
+		lineageTag: 966c6244-e9b8-4f11-b286-7b1b30771b0c
+		summarizeBy: none
+		sourceColumn: Internacao
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Idade do paciente na data do atendimento
+	column Idade
+		dataType: int64
+		formatString: 0
+		lineageTag: 3bb429a6-fb3f-4038-a9ce-15411bb7791c
+		summarizeBy: none
+		sourceColumn: Idade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Minutos entre a chegada e o inicio do atendimento
+	column Tempo_Espera_Min
+		dataType: int64
+		formatString: #,0
+		lineageTag: 45015cd5-de9f-4cfa-ad90-5376cfa6cf24
+		summarizeBy: none
+		sourceColumn: Tempo_Espera_Min
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Minutos de duracao do atendimento
+	column Duracao_Atendimento_Min
+		dataType: int64
+		formatString: #,0
+		lineageTag: 6267d474-75e3-4e0a-bf00-1bb4d795d4e3
+		summarizeBy: none
+		sourceColumn: Duracao_Atendimento_Min
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Dias de permanencia; zero quando nao houve internacao
+	column Dias_Internacao
+		dataType: int64
+		formatString: #,0
+		lineageTag: 6935d05f-a7f1-460f-b717-b0b47a887a9e
+		summarizeBy: sum
+		sourceColumn: Dias_Internacao
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Valor faturado do procedimento
+	column Valor_Procedimento
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: 2a107f31-fa38-40d4-957e-bf3271ee3304
+		summarizeBy: sum
+		sourceColumn: Valor_Procedimento
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Custo incorrido pelo hospital
+	column Custo_Hospitalar
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: 8aac7bb6-8ca1-4936-ab30-bce1d5400a07
+		summarizeBy: sum
+		sourceColumn: Custo_Hospitalar
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Nota de satisfacao declarada pelo paciente, de 1 a 5
+	column Satisfacao_1a5
+		dataType: int64
+		formatString: 0
+		lineageTag: 6de811b0-6cad-4b85-8eea-5cb97b32a87a
+		summarizeBy: none
+		sourceColumn: Satisfacao_1a5
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Valor faturado menos custo hospitalar da propria linha
+	column Margem =
+			fAtendimento[Valor_Procedimento] - fAtendimento[Custo_Hospitalar]
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: 1b20ba43-bbf0-41e3-a687-65502cd3ebbd
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordenacao das faixas de espera
+	column 'Ordem Faixa Espera' =
+			VAR e = fAtendimento[Tempo_Espera_Min]
+			RETURN SWITCH( TRUE(), e <= 15, 1, e <= 30, 2, e <= 60, 3, e <= 90, 4, 5 )
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d456f5b-6f4a-4fd1-ab8c-7c11bda0daa0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Agrupa o tempo de espera da linha em intervalos, para o histograma
+	column 'Faixa de Espera' =
+			VAR e = fAtendimento[Tempo_Espera_Min]
+			RETURN
+			    SWITCH( TRUE(),
+			        e <= 15, "Ate 15 min",
+			        e <= 30, "16-30 min",
+			        e <= 60, "31-60 min",
+			        e <= 90, "61-90 min",
+			        "Acima de 90 min"
+			    )
+		dataType: string
+		lineageTag: 3f790cc5-5f5e-4bff-9046-e212fe82ff0b
+		summarizeBy: none
+		sortByColumn: 'Ordem Faixa Espera'
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Classifica a nota de satisfacao da linha em tres grupos de leitura
+	column 'Percepcao do Paciente' =
+			SWITCH( TRUE(),
+			    fAtendimento[Satisfacao_1a5] <= 2, "Insatisfeito",
+			    fAtendimento[Satisfacao_1a5] = 3, "Neutro",
+			    "Satisfeito"
+			)
+		dataType: string
+		lineageTag: 3ee0fa6d-0b9d-4b5d-9dce-84d1143eae42
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Classifica o atendimento entre superavitario e deficitario
+	column 'Resultado Financeiro' =
+			IF( fAtendimento[Margem] >= 0, "Superavitario", "Deficitario" )
+		dataType: string
+		lineageTag: 1d89439d-9544-4bf8-b92f-016ef6ed3532
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fAtendimento = m
+		mode: import
+		queryGroup: Fato
+		source =
+				let
+				    // A fato guarda apenas chaves estrangeiras e metricas. Todo atributo descritivo
+				    // (cidade, UF, sexo, faixa etaria, natureza do convenio) vive nas dimensoes.
+				    Colunas = Table.SelectColumns( Fonte, {
+				        "Atendimento_ID", "Data_Atendimento", "Hospital", "Especialidade", "Diagnostico",
+				        "Procedimento", "Tipo_Atendimento", "Convenio", "Desfecho", "Perfil_Paciente",
+				        "Internacao", "Idade", "Tempo_Espera_Min", "Duracao_Atendimento_Min",
+				        "Dias_Internacao", "Valor_Procedimento", "Custo_Hospitalar", "Satisfacao_1a5" } )
+				in
+				    Colunas
+
+	annotation PBI_ResultType = Table

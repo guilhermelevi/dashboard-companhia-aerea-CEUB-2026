@@ -1,0 +1,25 @@
+/// Dimensao dos diagnosticos registrados. Independente da especialidade: o mesmo diagnostico aparece em mais de uma area.
+table dDiagnostico
+	lineageTag: 7ef98798-1672-4661-9c0b-39f66061d415
+
+	/// Condicao clinica associada ao atendimento
+	column Diagnostico
+		dataType: string
+		isKey
+		lineageTag: 6085e7df-5f9e-4117-979f-aad060a927e2
+		summarizeBy: none
+		sourceColumn: Diagnostico
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dDiagnostico = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"Diagnostico"} ) ),
+				    Ordenado = Table.Sort( Unicos, {{"Diagnostico", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

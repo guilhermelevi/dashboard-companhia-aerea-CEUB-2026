@@ -6,7 +6,7 @@ expression pUrlBase = "https://raw.githubusercontent.com" meta [IsParameterQuery
 	annotation PBI_ResultType = Text
 
 /// Caminho do CSV dentro do repositorio, a partir da raiz do host.
-expression pCaminhoCSV = "guilhermelevi/dashboard-companhia-aerea-CEUB-2026/main/dados/companhia_aerea_voos.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+expression pCaminhoCSV = "guilhermelevi/visualizacao-dados-CEUB-2026/main/02-companhia-aerea/dados/companhia_aerea_voos.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 6c5af91c-c09e-4f29-9bd0-6ba4275202cd
 	queryGroup: Parametros
 

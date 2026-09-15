@@ -1,0 +1,383 @@
+/// Tabela dedicada as medidas do modelo. Nao contem dados.
+table _Medidas
+	lineageTag: 6dc43bdd-c939-40de-a729-001c17b50a7f
+
+	/// Quantidade total de atendimentos realizados no contexto filtrado.
+	measure Atendimentos = COUNTROWS( fAtendimento )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: b2ed9c7d-f194-4908-abed-92d0090ebd55
+
+	/// Atendimentos que resultaram em internacao.
+	measure Internações = CALCULATE( [Atendimentos], dInternacao[Internacao] = "Sim" )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 1e24c434-82e0-4d5d-98dc-7ee92b05bd53
+
+	/// Participacao das internacoes sobre o total de atendimentos.
+	measure 'Taxa de Internação' = DIVIDE( [Internações], [Atendimentos] )
+		formatString: 0.0%
+		displayFolder: 01 Volume
+		lineageTag: 82ceaea3-7cd5-4fad-a017-bd25f0ce1162
+
+	/// Soma dos dias de permanencia hospitalar.
+	measure 'Dias de Internação' = SUM( fAtendimento[Dias_Internacao] )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 479aebbb-03a3-46db-8fe8-bbfd49376fd8
+
+	/// Media de dias por internacao. Divide pelos internados, nao pelo total.
+	measure 'Permanência Média (dias)' = DIVIDE( [Dias de Internação], [Internações] )
+		formatString: 0.0
+		displayFolder: 01 Volume
+		lineageTag: a3614aef-5654-4036-bc15-67ec0c8fa04c
+
+	/// Perfis demograficos distintos presentes no contexto.
+	measure 'Pacientes Distintos' = DISTINCTCOUNT( fAtendimento[Perfil_Paciente] )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: 77df939b-9dd7-4c9f-adda-6e722caabc48
+
+	/// Minutos medios entre a chegada e o inicio do atendimento.
+	measure 'Espera Média (min)' = AVERAGE( fAtendimento[Tempo_Espera_Min] )
+		formatString: #,0.0
+		displayFolder: 02 Experiência
+		lineageTag: 456ca5db-9b60-496a-be77-dd5f2f5e41e7
+
+	/// Tempo maximo de espera pactuado pela direcao: 30 minutos.
+	measure 'Meta de Espera (min)' = 30
+		formatString: #,0
+		displayFolder: 02 Experiência
+		lineageTag: 999f75ca-4f98-4a1e-a0c6-ab0cbbd7629a
+
+	/// Minutos acima (positivo) ou abaixo (negativo) da meta de espera.
+	measure 'Espera vs Meta' = [Espera Média (min)] - [Meta de Espera (min)]
+		formatString: +#,0.0;-#,0.0;0
+		displayFolder: 02 Experiência
+		lineageTag: b8bb5638-a608-41b3-a2fd-6755d0b51c4d
+
+	/// Participacao dos atendimentos iniciados em ate 30 minutos.
+	measure '% Dentro da Meta de Espera' =
+			VAR _dentro =
+			    CALCULATE( [Atendimentos], fAtendimento[Tempo_Espera_Min] <= 30 )
+			RETURN
+			    DIVIDE( _dentro, [Atendimentos] )
+		formatString: 0.0%
+		displayFolder: 02 Experiência
+		lineageTag: 1e66e1d4-8582-43a4-b153-548aa6821031
+
+	/// Minutos medios de duracao do atendimento.
+	measure 'Duração Média (min)' = AVERAGE( fAtendimento[Duracao_Atendimento_Min] )
+		formatString: #,0
+		displayFolder: 02 Experiência
+		lineageTag: 5cb383f5-f630-4acc-8be3-2fd9b9b40305
+
+	/// Nota media declarada pelos pacientes, de 1 a 5.
+	measure 'Satisfação Média' = AVERAGE( fAtendimento[Satisfacao_1a5] )
+		formatString: 0.00
+		displayFolder: 02 Experiência
+		lineageTag: 9d709fd7-fc78-4f25-a378-7bb1bfbf5064
+
+	/// Nota minima de satisfacao pactuada pela direcao: 4,0.
+	measure 'Meta de Satisfação' = 4
+		formatString: 0.00
+		displayFolder: 02 Experiência
+		lineageTag: e6506e59-19d2-4544-8f46-e2cdd4ef17e5
+
+	/// Distancia da nota media ate a meta de satisfacao.
+	measure 'Satisfação vs Meta' = [Satisfação Média] - [Meta de Satisfação]
+		formatString: +0.00;-0.00;0.00
+		displayFolder: 02 Experiência
+		lineageTag: 9b789bf2-3a5a-4a6a-923f-3054dbbbebe6
+
+	/// Participacao dos atendimentos com nota 4 ou 5.
+	measure '% Satisfação Alta' =
+			VAR _altos =
+			    CALCULATE( [Atendimentos], fAtendimento[Satisfacao_1a5] >= 4 )
+			RETURN
+			    DIVIDE( _altos, [Atendimentos] )
+		formatString: 0.0%
+		displayFolder: 02 Experiência
+		lineageTag: e137400c-5f30-4503-9f93-9154e518abcf
+
+	/// Participacao dos atendimentos com nota 1 ou 2.
+	measure '% Insatisfeitos' =
+			VAR _baixos =
+			    CALCULATE( [Atendimentos], fAtendimento[Satisfacao_1a5] <= 2 )
+			RETURN
+			    DIVIDE( _baixos, [Atendimentos] )
+		formatString: 0.0%
+		displayFolder: 02 Experiência
+		lineageTag: 7aa4ca01-733e-4038-bb08-02246723298c
+
+	/// Valor faturado dos procedimentos realizados.
+	measure Receita = SUM( fAtendimento[Valor_Procedimento] )
+		formatString: "R$" #,0;-"R$" #,0
+		displayFolder: 03 Financeiro
+		lineageTag: 91cf6e38-083b-4360-a0d8-e8a830a8031d
+
+	/// Custo hospitalar incorrido.
+	measure Custo = SUM( fAtendimento[Custo_Hospitalar] )
+		formatString: "R$" #,0;-"R$" #,0
+		displayFolder: 03 Financeiro
+		lineageTag: cd80ee61-2f2a-4d8d-9182-ea7b0abf740b
+
+	/// Resultado financeiro: receita menos custo.
+	measure Margem = [Receita] - [Custo]
+		formatString: "R$" #,0;-"R$" #,0
+		displayFolder: 03 Financeiro
+		lineageTag: 351234e5-e706-40bd-85d7-fcc54958f75a
+
+	/// Percentual da margem sobre a receita.
+	measure 'Margem %' = DIVIDE( [Margem], [Receita] )
+		formatString: 0.0%
+		displayFolder: 03 Financeiro
+		lineageTag: 50071592-2fd4-47d0-a6db-a4946e87a743
+
+	/// Margem minima pactuada pela direcao: 30%.
+	measure 'Meta de Margem %' = 0.30
+		formatString: 0.0%
+		displayFolder: 03 Financeiro
+		lineageTag: 7d54f556-0069-46e3-b8dd-324727d7b889
+
+	/// Pontos percentuais acima ou abaixo da meta de margem.
+	measure 'Margem vs Meta' = [Margem %] - [Meta de Margem %]
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 03 Financeiro
+		lineageTag: 7517a46b-ac05-49f9-a425-a98e7747a482
+
+	/// Receita media por atendimento.
+	measure 'Ticket Médio' = DIVIDE( [Receita], [Atendimentos] )
+		formatString: "R$" #,0.00;-"R$" #,0.00
+		displayFolder: 03 Financeiro
+		lineageTag: 17db48c6-3f41-42c4-8204-d63ba68cd3e2
+
+	/// Custo medio por atendimento.
+	measure 'Custo Médio' = DIVIDE( [Custo], [Atendimentos] )
+		formatString: "R$" #,0.00;-"R$" #,0.00
+		displayFolder: 03 Financeiro
+		lineageTag: a894e3ad-20ce-45d4-ba80-8842e134d1ed
+
+	/// Atendimentos cujo custo superou o valor faturado.
+	measure 'Atendimentos Deficitários' = CALCULATE( [Atendimentos], fAtendimento[Resultado Financeiro] = "Deficitario" )
+		formatString: #,0
+		displayFolder: 03 Financeiro
+		lineageTag: cfe06b6e-6386-4be7-b3dc-dbd2cf8d15f2
+
+	/// Participacao dos atendimentos que fecharam no negativo.
+	measure '% Atendimentos Deficitários' = DIVIDE( [Atendimentos Deficitários], [Atendimentos] )
+		formatString: 0.0%
+		displayFolder: 03 Financeiro
+		lineageTag: aafb9efd-c9ea-4a94-a9c5-461227fddb58
+
+	/// Atendimentos com desfecho de obito.
+	measure Óbitos = CALCULATE( [Atendimentos], dDesfecho[Desfecho] = "Óbito" )
+		formatString: #,0
+		displayFolder: 04 Clínico
+		lineageTag: 148a9075-0720-4e61-bf49-7cb632af56cd
+
+	/// Participacao dos obitos sobre o total de atendimentos.
+	measure 'Taxa de Mortalidade' = DIVIDE( [Óbitos], [Atendimentos] )
+		formatString: 0.00%
+		displayFolder: 04 Clínico
+		lineageTag: 0e0d5df7-d124-4166-be19-a2f2b120dd1c
+
+	/// Atendimentos encerrados com transferencia para outra unidade.
+	measure Transferências = CALCULATE( [Atendimentos], dDesfecho[Desfecho] = "Transferência" )
+		formatString: #,0
+		displayFolder: 04 Clínico
+		lineageTag: 5a761970-d8c8-4aec-9e74-29a6c5314d13
+
+	/// Participacao dos atendimentos resolvidos com alta.
+	measure '% Alta' = DIVIDE( CALCULATE( [Atendimentos], dDesfecho[Desfecho] = "Alta" ), [Atendimentos] )
+		formatString: 0.0%
+		displayFolder: 04 Clínico
+		lineageTag: c3bcabc1-6ad7-4fe8-aa75-db561db47ab9
+
+	/// Atendimentos classificados como emergencia.
+	measure Emergências = CALCULATE( [Atendimentos], dTipoAtendimento[Tipo] = "Emergência" )
+		formatString: #,0
+		displayFolder: 04 Clínico
+		lineageTag: 54f1d838-16f9-4276-8d22-5e5f27f6a88d
+
+	/// Participacao de urgencias e emergencias sobre o total — mede a pressao da porta aberta.
+	measure '% Não Programado' =
+			VAR _total = CALCULATE( [Atendimentos], ALL( dTipoAtendimento ) )
+			VAR _naoProg = CALCULATE( [Atendimentos], ALL( dTipoAtendimento ), dTipoAtendimento[Carater] = "Nao programado" )
+			RETURN
+			    DIVIDE( _naoProg, _total )
+		formatString: 0.0%
+		displayFolder: 04 Clínico
+		lineageTag: 08893382-5df9-49ed-9c6d-3578b3d5a5f7
+
+	/// Atendimentos do mes imediatamente anterior.
+	measure 'Atendimentos Mês Anterior' = CALCULATE( [Atendimentos], DATEADD( dCalendario[Date], -1, MONTH ) )
+		formatString: #,0
+		displayFolder: 05 Comparativos
+		lineageTag: fb64dfa7-c1b3-462f-97f0-4a3cb689b251
+
+	/// Variacao percentual dos atendimentos contra o mes anterior.
+	measure 'Variação MoM' =
+			VAR _ant = [Atendimentos Mês Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Atendimentos] - _ant, _ant ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Comparativos
+		lineageTag: 99e225a4-97f2-40c9-a297-1b77b276c380
+
+	/// Atendimentos no mesmo periodo do ano anterior.
+	measure 'Atendimentos Ano Anterior' = CALCULATE( [Atendimentos], SAMEPERIODLASTYEAR( dCalendario[Date] ) )
+		formatString: #,0
+		displayFolder: 05 Comparativos
+		lineageTag: a06143db-807a-4e67-8963-cee6b40bb8a7
+
+	/// Variacao percentual dos atendimentos contra o mesmo periodo do ano anterior.
+	measure 'Variação YoY' =
+			VAR _ant = [Atendimentos Ano Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Atendimentos] - _ant, _ant ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Comparativos
+		lineageTag: 72aa8d40-ac92-4784-a464-15a208e4547b
+
+	/// Receita do mes imediatamente anterior.
+	measure 'Receita Mês Anterior' = CALCULATE( [Receita], DATEADD( dCalendario[Date], -1, MONTH ) )
+		formatString: "R$" #,0;-"R$" #,0
+		displayFolder: 05 Comparativos
+		lineageTag: 0db7fde1-213b-42b2-b483-93fa0b9e2fcf
+
+	/// Variacao percentual da receita contra o mes anterior.
+	measure 'Variação Receita MoM' =
+			VAR _ant = [Receita Mês Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Receita] - _ant, _ant ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Comparativos
+		lineageTag: 5cac3e10-4bab-44b2-aa63-2deb6cbf2b38
+
+	/// Espera media do mes imediatamente anterior.
+	measure 'Espera Mês Anterior' = CALCULATE( [Espera Média (min)], DATEADD( dCalendario[Date], -1, MONTH ) )
+		formatString: #,0.0
+		displayFolder: 05 Comparativos
+		lineageTag: 0d9cf52d-f6cf-4a99-aa67-746571b983d6
+
+	/// Variacao percentual da espera media contra o mes anterior. Aqui, queda e melhora.
+	measure 'Variação Espera MoM' =
+			VAR _ant = [Espera Mês Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Espera Média (min)] - _ant, _ant ) )
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05 Comparativos
+		lineageTag: 2085d9fd-2cf8-4ad1-adca-6fdb518a8dd6
+
+	/// Media movel de tres meses, usada para separar tendencia de ruido mensal.
+	measure 'Média Móvel 3M Atendimentos' =
+			AVERAGEX(
+			    DATESINPERIOD( dCalendario[Date], MAX( dCalendario[Date] ), -3, MONTH ),
+			    CALCULATE( [Atendimentos] )
+			)
+		formatString: #,0
+		displayFolder: 05 Comparativos
+		lineageTag: 801f3236-39d7-4796-9571-870e42265300
+
+	/// Peso da categoria selecionada sobre o total exibido — rotulo do treemap.
+	measure 'Participação nos Atendimentos' =
+			DIVIDE(
+			    [Atendimentos],
+			    CALCULATE( [Atendimentos], ALLSELECTED( fAtendimento ) )
+			)
+		formatString: 0.0%
+		displayFolder: 06 Apoio
+		lineageTag: 3ad412dd-0d6e-4e83-97d3-ad96bf7eea9f
+
+	/// Posicao da especialidade no ranking de volume.
+	measure 'Ranking de Especialidades' =
+			IF(
+			    HASONEVALUE( dEspecialidade[Especialidade] ),
+			    RANKX( ALLSELECTED( dEspecialidade[Especialidade] ), [Atendimentos], , DESC, DENSE )
+			)
+		formatString: #,0
+		displayFolder: 06 Apoio
+		lineageTag: e0325d5b-d0fd-4ee8-af99-e211c912a508
+
+	/// Cor condicional do indicador de espera: verde ate a meta, ambar ate 45 min, vermelho acima.
+	measure 'Cor Semáforo Espera' =
+			VAR _e = [Espera Média (min)]
+			RETURN
+			    SWITCH( TRUE(),
+			        _e <= 30, "#2E9B6B",
+			        _e <= 45, "#E8A33D",
+			        "#C8414F"
+			    )
+		displayFolder: 06 Apoio
+		lineageTag: b5175382-5fc0-40c9-9ab0-713d82701514
+
+	/// Cor condicional do indicador de satisfacao.
+	measure 'Cor Semáforo Satisfação' =
+			VAR _s = [Satisfação Média]
+			RETURN
+			    SWITCH( TRUE(),
+			        _s >= 4,   "#2E9B6B",
+			        _s >= 3.5, "#E8A33D",
+			        "#C8414F"
+			    )
+		displayFolder: 06 Apoio
+		lineageTag: d5140681-bafe-4541-ba0f-b5a820ecbab8
+
+	/// Cor condicional do indicador de margem.
+	measure 'Cor Semáforo Margem' =
+			VAR _m = [Margem %]
+			RETURN
+			    SWITCH( TRUE(),
+			        _m >= 0.30, "#2E9B6B",
+			        _m >= 0.20, "#E8A33D",
+			        "#C8414F"
+			    )
+		displayFolder: 06 Apoio
+		lineageTag: a1d4a9e3-6ced-4e52-9791-ecd598466544
+
+	/// Texto que da contexto ao cartao de espera: um numero isolado nao orienta decisao.
+	measure 'Rótulo Espera vs Meta' =
+			VAR _d = [Espera vs Meta]
+			RETURN
+			    IF( _d <= 0,
+			        FORMAT( ABS( _d ), "#,0.0" ) & " min abaixo da meta de 30",
+			        FORMAT( _d, "#,0.0" ) & " min acima da meta de 30" )
+		displayFolder: 06 Apoio
+		lineageTag: c23d99d3-3ca0-4816-b50f-b894c526a28d
+
+	/// Texto que da contexto ao cartao de satisfacao.
+	measure 'Rótulo Satisfação vs Meta' =
+			VAR _d = [Satisfação vs Meta]
+			RETURN
+			    IF( _d >= 0,
+			        FORMAT( _d, "0.00" ) & " acima da meta de 4,0",
+			        FORMAT( ABS( _d ), "0.00" ) & " abaixo da meta de 4,0" )
+		displayFolder: 06 Apoio
+		lineageTag: bebf64cd-262e-4664-9770-db02cd8234e9
+
+	/// Texto que da contexto ao cartao de margem.
+	measure 'Rótulo Margem vs Meta' =
+			VAR _d = [Margem vs Meta]
+			RETURN
+			    IF( _d >= 0,
+			        FORMAT( _d, "0.0%" ) & " acima da meta de 30%",
+			        FORMAT( ABS( _d ), "0.0%" ) & " abaixo da meta de 30%" )
+		displayFolder: 06 Apoio
+		lineageTag: ff65f007-c63c-4d04-8e0a-8cfaf8c844bf
+
+	column Value
+		isHidden
+		formatString: 0
+		lineageTag: ee780e13-0bc7-4a50-8ec8-18b50b3db947
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Medidas = calculated
+		mode: import
+		source = {BLANK()}
+
+	annotation PBI_Id = _Medidas

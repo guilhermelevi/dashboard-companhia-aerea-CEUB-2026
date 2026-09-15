@@ -1,95 +1,30 @@
-# Dashboard Executivo — Companhia Aérea
+# Visualização de Dados — CEUB, 5º semestre
 
-Projeto Power BI (formato **PBIP/PBIR**) pronto para sincronizar no **Microsoft Fabric** via Git.
-Star schema com 6 dimensões, 44 medidas DAX e relatório de 5 páginas.
+Projetos Power BI em formato **PBIP/PBIR**, versionáveis e publicáveis no Microsoft Fabric
+pela REST API. Prof. José Antonio de Paiva Júnior · Turma A.
 
-**Modelo:**
+| Exercício | O que é | Escala |
+|---|---|---|
+| [01 · Hospitalar](01-hospitalar/) | Os cinco tipos de **visualização especializada** da aula 05: cartões/KPIs, treemap, mapa, matriz e tabela | 100 mil atendimentos · 6 páginas · 75 visuais · 49 medidas |
+| [02 · Companhia Aérea](02-companhia-aerea/) | Dashboard executivo respondendo as 15 perguntas do enunciado | 6.200 voos · 5 páginas · 62 objetos · 44 medidas |
 
-```
-            dCalendario (1.096)
-                   |
- dAeroporto (20) --+-- dRota (370)
-                   |
-       fVoos  ·  6.200 voos  ·  só chaves e métricas
-                   |
- dAeronave (6) ----+-- dSituacao (3) -- dMotivo (9)
-```
+Cada pasta tem seu `README.md` (como publicar e republicar) e um `MAPA-DAS-PERGUNTAS.md`
+com a justificativa de cada escolha de visual.
 
-A fato guarda apenas chaves estrangeiras e métricas. Todo atributo descritivo
-(cidade, UF, região, fabricante, porte, natureza da causa) vive nas dimensões.
+## Os dados são lidos daqui mesmo
 
-```
-CompanhiaAerea.pbix                  ← ENTREGÁVEL: abre em qualquer Power BI Desktop
-CompanhiaAerea.pbip                  ← o mesmo projeto em formato de pastas (versionável)
-CompanhiaAerea.SemanticModel/        ← modelo: tabelas, relações, 44 medidas DAX
-CompanhiaAerea.Report/               ← relatório: 5 páginas, 62 objetos
-dados/companhia_aerea_voos.csv       ← fonte lida pelo modelo via HTTP
-ROTEIRO-GERAR-PAINEL.md              ← como reproduzir este processo em outro exercício
-```
-
-> O `.pbix` foi exportado do Service com `GET /v1.0/myorg/groups/{ws}/reports/{id}/Export`
-> e contém o DataModel embutido — abre sem depender do Fabric.
-
----
-
-## Status: já publicado no Fabric
-
-O projeto **já está no ar** no workspace `Companhia Aerea CEUB`, publicado via Fabric REST API.
-
-| Item | Link |
-|---|---|
-| Relatório | https://app.powerbi.com/groups/21e91615-1c27-4a73-ae1a-887ba415aa68/reports/d69a0523-657f-44dd-8775-cfd3c2152603 |
-| Semantic model | https://app.powerbi.com/groups/21e91615-1c27-4a73-ae1a-887ba415aa68/datasets/97697c03-8626-491e-99b9-8aa51a9edb21 |
-
-**Fonte de dados:** o CSV é lido por HTTP da URL pública deste próprio repositório
-(`dados/companhia_aerea_voos.csv`), com credencial anônima. Não há gateway nem OneDrive envolvidos,
-e a atualização agendada funciona sem configuração adicional.
-
-Os dois parâmetros do modelo controlam isso:
+Os dois modelos leem o CSV por HTTP deste repositório, com credencial anônima — sem gateway,
+sem OneDrive, e a atualização agendada funciona sem configuração extra. Dois parâmetros
+controlam isso em cada modelo:
 
 | Parâmetro | Valor |
 |---|---|
 | `pUrlBase` | `https://raw.githubusercontent.com` |
-| `pCaminhoCSV` | `guilhermelevi/dashboard-companhia-aerea-CEUB-2026/main/dados/companhia_aerea_voos.csv` |
+| `pCaminhoCSV` | `guilhermelevi/visualizacao-dados-CEUB-2026/main/<exercício>/dados/<arquivo>.csv` |
 
-> Se o repositório voltar a ser privado, o refresh quebra. Nesse caso troque a fonte para OneDrive
-> ou embuta os dados no modelo.
+> Se o repositório voltar a ser privado, os refreshes quebram. A URL raw precisa de acesso anônimo.
 
-### Republicar depois de editar os arquivos
+## [Roteiro para gerar um painel do zero](ROTEIRO-GERAR-PAINEL.md)
 
-Alterou algum `.tmdl` ou `visual.json`? Basta reenviar a definição pela API — não precisa de Git integration
-(o admin do tenant do CEUB mantém a integração com GitHub desabilitada de qualquer forma).
-
----
-
-## Entregar o `.pbix`
-
-O enunciado pede o arquivo `.pbix`. Duas rotas:
-
-**A. Baixar do Service** — no relatório: **Arquivo → Baixar este arquivo → .pbix**.
-Nem todo semantic model criado pela web libera esse download. Se a opção estiver cinza, use a rota B.
-
-**B. Abrir o projeto no Desktop** — em qualquer máquina Windows (laboratório da faculdade serve),
-dê duplo clique em `CompanhiaAerea.pbip` e faça **Arquivo → Salvar como → .pbix**. Leva 30 segundos.
-
-Entregue também o `companhia_aerea_voos.csv`.
-
----
-
-## Se algo der errado
-
-| Sintoma | Causa provável | O que fazer |
-|---|---|---|
-| Refresh falha com "arquivo não encontrado" | O repositório voltou a ser privado | A URL raw precisa de acesso anônimo — torne o repo público ou troque a fonte |
-| Refresh falha com "column does not exist in the rowset" | `sourceColumn` usa o nome anterior ao rename no Power Query | Conferir o nome **depois** do `Table.RenameColumns` |
-| Import rejeitado com `Property 'description' is unknown` | Um comentário `///` acima de um `relationship` | Descrição só vale em tabela, coluna, medida e parâmetro |
-| Relatório abre em branco, com skeleton infinito | Schemas do PBIR em versão antiga | Ver a tabela de versões em `ROTEIRO-GERAR-PAINEL.md` |
-| Credencial da fonte | Web anônima, sem gateway | Configurações do semantic model → Editar credenciais → Anônimo |
-
-As cores de cada gráfico estão definidas visual a visual, então o dashboard fica correto
-mesmo que o tema base não carregue.
-
-## Reproduzir este processo
-
-`ROTEIRO-GERAR-PAINEL.md` descreve o pipeline completo, do enunciado ao painel publicado,
-com as armadilhas de formato que falham em silêncio.
+O pipeline completo — do enunciado ao painel publicado e validado — com as armadilhas de
+formato do PBIR que fazem um relatório abrir em branco sem dar erro.
