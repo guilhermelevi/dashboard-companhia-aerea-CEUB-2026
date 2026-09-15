@@ -3,17 +3,17 @@ table dAeronave
 	lineageTag: f082011d-d6d0-481b-aed3-51742188f384
 
 	/// Modelo da aeronave
-	column 'Tipo'
+	column Tipo
 		dataType: string
+		isKey
 		lineageTag: f38c3750-6b14-4ab4-90b1-3eff32ef0c7a
 		summarizeBy: none
 		sourceColumn: Tipo
-		isKey
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Fabricante do modelo
-	column 'Fabricante'
+	column Fabricante
 		dataType: string
 		lineageTag: fa215e81-4a4c-4838-8102-81c7a02ef698
 		summarizeBy: none
@@ -22,7 +22,7 @@ table dAeronave
 		annotation SummarizationSetBy = Automatic
 
 	/// Assentos do modelo
-	column 'Capacidade'
+	column Capacidade
 		dataType: int64
 		formatString: #,0
 		lineageTag: 9b413fe2-d62c-47e2-9f54-bd853c7f705e
@@ -32,7 +32,7 @@ table dAeronave
 		annotation SummarizationSetBy = Automatic
 
 	/// Classificação por capacidade
-	column 'Porte'
+	column Porte
 		dataType: string
 		lineageTag: b2f7f4bf-6313-4219-bb7b-1feaddc36583
 		summarizeBy: none
@@ -77,3 +77,4 @@ table dAeronave
 				    Ordenado
 
 	annotation PBI_ResultType = Table
+

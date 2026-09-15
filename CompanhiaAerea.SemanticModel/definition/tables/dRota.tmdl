@@ -3,32 +3,32 @@ table dRota
 	lineageTag: d135d240-883f-4e0a-90a6-e7a08cedc527
 
 	/// Par origem-destino, ex.: GRU - SDU
-	column 'Rota'
+	column Rota
 		dataType: string
+		isKey
 		lineageTag: 9f2cf6b6-0ff0-4618-be5c-7ce40b110f36
 		summarizeBy: none
 		sourceColumn: Rota
-		isKey
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Cidade de partida
-	column 'Origem'
+	column Origem
 		dataType: string
 		lineageTag: 5b1c5f4e-9579-4b8a-92a6-0ca68d572ad6
+		dataCategory: City
 		summarizeBy: none
 		sourceColumn: Origem
-		dataCategory: City
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Cidade de chegada
-	column 'Destino'
+	column Destino
 		dataType: string
 		lineageTag: d228c4b7-12ac-4fd4-9c0f-944809005aee
+		dataCategory: City
 		summarizeBy: none
 		sourceColumn: Destino
-		dataCategory: City
 
 		annotation SummarizationSetBy = Automatic
 
@@ -51,7 +51,7 @@ table dRota
 		annotation SummarizationSetBy = Automatic
 
 	/// Extensão da rota em quilômetros
-	column 'Distancia'
+	column Distancia
 		dataType: int64
 		formatString: #,0
 		lineageTag: bab66269-ef05-4699-8ba2-2f3accef0777
@@ -78,8 +78,7 @@ table dRota
 		annotation SummarizationSetBy = Automatic
 
 	/// Ordenação das faixas de distância
-	column 'Ordem Faixa Distancia' =
-			SWITCH( TRUE(), dRota[Distancia] < 500, 1, dRota[Distancia] < 1500, 2, dRota[Distancia] < 2500, 3, 4 )
+	column 'Ordem Faixa Distancia' = SWITCH( TRUE(), dRota[Distancia] < 500, 1, dRota[Distancia] < 1500, 2, dRota[Distancia] < 2500, 3, 4 )
 		dataType: int64
 		formatString: 0
 		lineageTag: ca24a267-b696-4096-8661-0e6be4aed7e4
@@ -125,3 +124,4 @@ table dRota
 				    Ordenado
 
 	annotation PBI_ResultType = Table
+

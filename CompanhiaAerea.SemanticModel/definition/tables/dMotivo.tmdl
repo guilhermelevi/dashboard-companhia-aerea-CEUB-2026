@@ -3,17 +3,17 @@ table dMotivo
 	lineageTag: 903dacc8-d4c5-433a-843d-c263d7a76e07
 
 	/// Causa registrada do atraso ou cancelamento
-	column 'Motivo'
+	column Motivo
 		dataType: string
+		isKey
 		lineageTag: 5c32822f-7d1a-4bea-9081-f8e80db760c2
 		summarizeBy: none
 		sourceColumn: Motivo
-		isKey
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Agrupa as causas por natureza: externa, interna ou comercial
-	column 'Categoria'
+	column Categoria
 		dataType: string
 		lineageTag: 5da3c1f4-b5d9-4389-a7c2-13c07ecaf191
 		summarizeBy: none
@@ -22,7 +22,7 @@ table dMotivo
 		annotation SummarizationSetBy = Automatic
 
 	/// Se a companhia tem ação direta sobre a causa
-	column 'Controlavel'
+	column Controlavel
 		dataType: string
 		lineageTag: 7588c3c6-748a-4570-975e-4a74542b1fc9
 		summarizeBy: none
@@ -63,3 +63,4 @@ table dMotivo
 				    Ordenado
 
 	annotation PBI_ResultType = Table
+

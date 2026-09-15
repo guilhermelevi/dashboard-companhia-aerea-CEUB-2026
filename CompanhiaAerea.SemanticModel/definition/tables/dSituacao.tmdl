@@ -3,18 +3,18 @@ table dSituacao
 	lineageTag: c716c057-143d-4625-85e7-7bea5568ab38
 
 	/// Pontual, Atrasado ou Cancelado
-	column 'Situacao'
+	column Situacao
 		dataType: string
+		isKey
 		lineageTag: 1cde85e4-54c3-497b-b197-7ea15e0e77ae
 		summarizeBy: none
 		sourceColumn: Situacao
-		isKey
 		sortByColumn: Ordem
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Ordem de exibição, do melhor para o pior desfecho
-	column 'Ordem'
+	column Ordem
 		dataType: int64
 		formatString: 0
 		lineageTag: 94d23371-1a54-450f-a50b-93fdcc45457c
@@ -24,7 +24,7 @@ table dSituacao
 		annotation SummarizationSetBy = Automatic
 
 	/// Indica se o voo chegou a decolar
-	column 'Realizado'
+	column Realizado
 		dataType: string
 		lineageTag: e38ed516-2c8c-478e-b4cc-6c6a456cdc05
 		summarizeBy: none
@@ -48,3 +48,4 @@ table dSituacao
 				    Ordenado
 
 	annotation PBI_ResultType = Table
+

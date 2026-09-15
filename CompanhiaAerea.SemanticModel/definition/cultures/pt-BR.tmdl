@@ -1,9 +1,9 @@
 cultureInfo pt-BR
 
-	linguisticMetadata = 
+	linguisticMetadata =
 			{
 			  "Version": "1.0.0",
 			  "Language": "pt-BR"
 			}
-
 		contentType: json
+

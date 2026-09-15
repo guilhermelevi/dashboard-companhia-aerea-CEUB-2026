@@ -21,3 +21,4 @@ relationship rel_situacao_voos
 relationship rel_motivo_voos
 	fromColumn: fVoos.motivo_atraso_cancelamento
 	toColumn: dMotivo.Motivo
+

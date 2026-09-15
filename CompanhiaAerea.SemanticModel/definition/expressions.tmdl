@@ -1,14 +1,14 @@
 /// Host de onde o arquivo de dados e baixado.
 expression pUrlBase = "https://raw.githubusercontent.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 2d73cdde-a521-496c-951a-faebc3370925
-	queryGroup: 'Parametros'
+	queryGroup: Parametros
 
 	annotation PBI_ResultType = Text
 
 /// Caminho do CSV dentro do repositorio, a partir da raiz do host.
 expression pCaminhoCSV = "guilhermelevi/dashboard-companhia-aerea-CEUB-2026/main/dados/companhia_aerea_voos.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
 	lineageTag: 6c5af91c-c09e-4f29-9bd0-6ba4275202cd
-	queryGroup: 'Parametros'
+	queryGroup: Parametros
 
 	annotation PBI_ResultType = Text
 
@@ -22,6 +22,7 @@ expression Fonte =
 		in
 		    SemVazios
 	lineageTag: 3072278d-0be9-44fd-801e-ce533b50a6d6
-	queryGroup: 'Estagio'
+	queryGroup: Estagio
 
 	annotation PBI_ResultType = Table
+

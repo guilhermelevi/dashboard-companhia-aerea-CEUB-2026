@@ -4,19 +4,19 @@ table dCalendario
 	dataCategory: Time
 
 	/// Data do calendário
-	column 'Date'
+	column Date
 		dataType: dateTime
+		isKey
 		formatString: Long Date
 		lineageTag: 4f03b446-0294-4647-819f-f1ccc9ea0d22
 		summarizeBy: none
-		isKey
 		isNameInferred
 		sourceColumn: [Date]
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Ano civil
-	column 'Ano'
+	column Ano
 		dataType: int64
 		formatString: 0
 		lineageTag: 6cb08670-ca97-4c47-b60a-c6b78c6a5901
@@ -26,7 +26,7 @@ table dCalendario
 		annotation SummarizationSetBy = Automatic
 
 	/// Trimestre do ano
-	column 'Trimestre'
+	column Trimestre
 		dataType: string
 		lineageTag: 78c29c7a-79af-4606-b005-130ab2417c56
 		summarizeBy: none
@@ -45,12 +45,12 @@ table dCalendario
 		annotation SummarizationSetBy = Automatic
 
 	/// Mês abreviado
-	column 'Mes'
+	column Mes
 		dataType: string
 		lineageTag: eefe10e0-4373-47e1-8b3e-34c47a1e0c2a
 		summarizeBy: none
-		sortByColumn: 'Numero do Mes'
 		sourceColumn: [Mes]
+		sortByColumn: 'Numero do Mes'
 
 		annotation SummarizationSetBy = Automatic
 
@@ -59,13 +59,13 @@ table dCalendario
 		dataType: string
 		lineageTag: 68594925-3a40-49ac-be2d-a63225b66e27
 		summarizeBy: none
-		sortByColumn: 'Numero do Mes'
 		sourceColumn: [Mes Completo]
+		sortByColumn: 'Numero do Mes'
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Competência no formato AAAA-MM
-	column 'Ano-Mes'
+	column Ano-Mes
 		dataType: string
 		lineageTag: 3c51bbd9-a630-4349-8292-693d7be96180
 		summarizeBy: none
@@ -88,8 +88,8 @@ table dCalendario
 		dataType: string
 		lineageTag: 8c4500a9-f9c5-4ff0-b9b9-50adff6ad764
 		summarizeBy: none
-		sortByColumn: 'Numero Dia Semana'
 		sourceColumn: [Dia da Semana]
+		sortByColumn: 'Numero Dia Semana'
 
 		annotation SummarizationSetBy = Automatic
 
@@ -137,3 +137,4 @@ table dCalendario
 				)
 
 	annotation PBI_Id = dCalendario
+

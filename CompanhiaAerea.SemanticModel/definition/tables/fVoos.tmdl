@@ -3,7 +3,7 @@ table fVoos
 	lineageTag: 784e4d5c-a8fe-4c16-8e17-6cca1060d03f
 
 	/// Identificador único do voo (chave degenerada)
-	column 'id_voo'
+	column id_voo
 		dataType: string
 		lineageTag: 635d2fbd-0ca0-4e5f-9839-8697da456484
 		summarizeBy: none
@@ -12,7 +12,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Número comercial do voo (chave degenerada)
-	column 'numero_voo'
+	column numero_voo
 		dataType: string
 		lineageTag: fcc1cf9d-2cbf-46c6-9971-11311f03b490
 		summarizeBy: none
@@ -21,7 +21,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Data do voo — chave para dCalendario
-	column 'data_voo'
+	column data_voo
 		dataType: dateTime
 		formatString: Long Date
 		lineageTag: 7a8ce7b9-bdbd-40ee-9b46-3eaea6b81db1
@@ -31,7 +31,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Aeroporto de partida — chave para dAeroporto
-	column 'origem_iata'
+	column origem_iata
 		dataType: string
 		lineageTag: 94ec74c9-faad-4d51-9c4e-e8004a183c56
 		summarizeBy: none
@@ -40,7 +40,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Par origem-destino — chave para dRota
-	column 'rota'
+	column rota
 		dataType: string
 		lineageTag: 12b24af3-e227-49ac-8a35-65f615511370
 		summarizeBy: none
@@ -48,35 +48,8 @@ table fVoos
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Modelo da aeronave — chave para dAeronave
-	column 'tipo_aeronave'
-		dataType: string
-		lineageTag: 39e13c08-fa79-4b00-bdde-d93b87598961
-		summarizeBy: none
-		sourceColumn: tipo_aeronave
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Situação do voo — chave para dSituacao
-	column 'situacao_voo'
-		dataType: string
-		lineageTag: ae34ca11-dfd4-4d17-b606-ec74197c7ffa
-		summarizeBy: none
-		sourceColumn: situacao_voo
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Causa registrada — chave para dMotivo
-	column 'motivo_atraso_cancelamento'
-		dataType: string
-		lineageTag: f143cc7f-1caa-4488-a9db-144cf9ebc6cb
-		summarizeBy: none
-		sourceColumn: motivo_atraso_cancelamento
-
-		annotation SummarizationSetBy = Automatic
-
 	/// Distância percorrida em quilômetros
-	column 'distancia_km'
+	column distancia_km
 		dataType: int64
 		formatString: #,0
 		lineageTag: 34be620f-2378-45ae-8e9c-bacc3ed5e40b
@@ -85,8 +58,17 @@ table fVoos
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Modelo da aeronave — chave para dAeronave
+	column tipo_aeronave
+		dataType: string
+		lineageTag: 39e13c08-fa79-4b00-bdde-d93b87598961
+		summarizeBy: none
+		sourceColumn: tipo_aeronave
+
+		annotation SummarizationSetBy = Automatic
+
 	/// Assentos disponíveis no voo
-	column 'capacidade_aeronave'
+	column capacidade_aeronave
 		dataType: int64
 		formatString: #,0
 		lineageTag: 27181b3a-14b2-409f-a80b-cbd633da7ab2
@@ -96,7 +78,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Passageiros transportados
-	column 'passageiros'
+	column passageiros
 		dataType: int64
 		formatString: #,0
 		lineageTag: 9668eced-27f6-4f5e-ac71-fa17db9b3949
@@ -106,7 +88,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Passageiros dividido pela capacidade
-	column 'taxa_ocupacao'
+	column taxa_ocupacao
 		dataType: double
 		formatString: 0.0%
 		lineageTag: eabfa131-d2d6-4238-9a33-1bd7870bbd70
@@ -116,7 +98,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Preço médio pago por passageiro
-	column 'preco_medio_passagem'
+	column preco_medio_passagem
 		dataType: double
 		formatString: "R$" #,0.00
 		lineageTag: 4b3f4045-21ec-43d5-879c-655c02525601
@@ -126,7 +108,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Receita bruta do voo
-	column 'receita_voo'
+	column receita_voo
 		dataType: double
 		formatString: "R$" #,0.00
 		lineageTag: ab5dbf6b-aac2-41dc-992f-2981b61f6b57
@@ -136,7 +118,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Custo operacional do voo
-	column 'custo_voo'
+	column custo_voo
 		dataType: double
 		formatString: "R$" #,0.00
 		lineageTag: d45276a4-977f-4275-af6c-dfcc59a956d8
@@ -146,7 +128,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Receita menos custo
-	column 'lucro_voo'
+	column lucro_voo
 		dataType: double
 		formatString: "R$" #,0.00
 		lineageTag: 220e0230-7879-4c60-9ed3-de802cf3ef13
@@ -156,7 +138,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Minutos de atraso na partida
-	column 'atraso_minutos'
+	column atraso_minutos
 		dataType: double
 		formatString: #,0
 		lineageTag: 4650b870-3d45-427d-b9a3-95c356036e10
@@ -165,8 +147,26 @@ table fVoos
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Situação do voo — chave para dSituacao
+	column situacao_voo
+		dataType: string
+		lineageTag: ae34ca11-dfd4-4d17-b606-ec74197c7ffa
+		summarizeBy: none
+		sourceColumn: situacao_voo
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Causa registrada — chave para dMotivo
+	column motivo_atraso_cancelamento
+		dataType: string
+		lineageTag: f143cc7f-1caa-4488-a9db-144cf9ebc6cb
+		summarizeBy: none
+		sourceColumn: motivo_atraso_cancelamento
+
+		annotation SummarizationSetBy = Automatic
+
 	/// Tempo de voo em minutos
-	column 'duracao_minutos'
+	column duracao_minutos
 		dataType: int64
 		formatString: #,0
 		lineageTag: d06c2fd3-5b29-43cf-9286-2078b39cec4e
@@ -176,7 +176,7 @@ table fVoos
 		annotation SummarizationSetBy = Automatic
 
 	/// Nota média de satisfação, de 1 a 5
-	column 'satisfacao_passageiros'
+	column satisfacao_passageiros
 		dataType: double
 		formatString: 0.0
 		lineageTag: 9ab0f9a5-2a68-4441-bbe8-22fb5c576dd6
@@ -256,3 +256,4 @@ table fVoos
 				    Colunas
 
 	annotation PBI_ResultType = Table
+

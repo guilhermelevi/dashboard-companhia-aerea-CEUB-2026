@@ -3,46 +3,37 @@ table dAeroporto
 	lineageTag: 90efbe19-3fc7-4727-b766-bbd9b6178b40
 
 	/// Código IATA de três letras
-	column 'IATA'
+	column IATA
 		dataType: string
+		isKey
 		lineageTag: 36fc1b0a-6a76-489c-be0b-f0371c2a1a0d
 		summarizeBy: none
 		sourceColumn: IATA
-		isKey
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Rótulo no formato Cidade (IATA)
-	column 'Aeroporto'
-		dataType: string
-		lineageTag: 5810d504-609a-4358-a541-bd1716558176
-		summarizeBy: none
-		sourceColumn: Aeroporto
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Cidade atendida
-	column 'Cidade'
+	column Cidade
 		dataType: string
 		lineageTag: f51b7fb2-e15f-4d26-9b85-d847446e4203
+		dataCategory: City
 		summarizeBy: none
 		sourceColumn: Cidade
-		dataCategory: City
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Unidade federativa
-	column 'UF'
+	column UF
 		dataType: string
 		lineageTag: 45752515-0eea-40db-8ef6-1dac8338b78d
+		dataCategory: StateOrProvince
 		summarizeBy: none
 		sourceColumn: UF
-		dataCategory: StateOrProvince
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Região do país
-	column 'Regiao'
+	column Regiao
 		dataType: string
 		lineageTag: 49373a9c-b65c-4bd7-b258-15e3acdb19b9
 		summarizeBy: none
@@ -50,23 +41,32 @@ table dAeroporto
 
 		annotation SummarizationSetBy = Automatic
 
+	/// Rótulo no formato Cidade (IATA)
+	column Aeroporto
+		dataType: string
+		lineageTag: 5810d504-609a-4358-a541-bd1716558176
+		summarizeBy: none
+		sourceColumn: Aeroporto
+
+		annotation SummarizationSetBy = Automatic
+
 	/// Latitude do aeroporto
-	column 'Latitude'
+	column Latitude
 		dataType: double
 		lineageTag: 3aff5279-0772-424a-8ad2-2d1fcdc9c035
+		dataCategory: Latitude
 		summarizeBy: none
 		sourceColumn: Latitude
-		dataCategory: Latitude
 
 		annotation SummarizationSetBy = Automatic
 
 	/// Longitude do aeroporto
-	column 'Longitude'
+	column Longitude
 		dataType: double
 		lineageTag: 07234435-947b-4f3a-a48f-6c358ba6ece4
+		dataCategory: Longitude
 		summarizeBy: none
 		sourceColumn: Longitude
-		dataCategory: Longitude
 
 		annotation SummarizationSetBy = Automatic
 
@@ -93,3 +93,4 @@ table dAeroporto
 				    Ordenado
 
 	annotation PBI_ResultType = Table
+
