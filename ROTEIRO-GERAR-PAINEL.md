@@ -49,12 +49,32 @@ uma coluna está vazia.
 
 ### Etapa 3 — Modelo
 
-Star schema: uma tabela fato, dimensões ao redor, tabela separada só para as medidas.
+Star schema de verdade: **a fato guarda apenas chaves estrangeiras e métricas**. Todo
+atributo descritivo vai para uma dimensão.
 
-- Calendário próprio (nunca a hierarquia automática)
+O teste é simples: se a coluna descreve *o que a entidade é* (cidade, região, fabricante,
+porte, natureza da causa), ela pertence à dimensão. Se ela mede *o que aconteceu naquela
+linha* (passageiros, receita, atraso), fica na fato.
+
+A exceção são as **faixas derivadas da própria linha** — faixa de atraso, faixa de
+ocupação, resultado do voo. Dependem do valor medido naquele registro, não de um atributo
+compartilhado, então ficam na fato mesmo sendo texto.
+
+> É fácil produzir uma flat table e chamá-la de star schema. Se a fato tem 40 colunas e
+> só duas dimensões penduradas, não é star schema — é uma tabela larga. O sinal mais claro
+> é encontrar `cidade`, `uf`, `região` ou `ano/mês/dia` dentro da fato.
+
+Demais regras:
+
+- Calendário próprio, marcado como tabela de datas (nunca a hierarquia automática)
+- Uma **consulta de estágio** que lê e tipa o arquivo **uma vez só**; a fato e as dimensões
+  derivam dela. Sem isso, sete tabelas baixam o mesmo arquivo sete vezes no refresh
+- Dimensão de local deve cobrir origem **e** destino: unir os dois conjuntos antes do
+  `Table.Distinct`
 - Medidas em DAX, agrupadas em pastas por assunto
-- Colunas calculadas para agrupamentos que o visual precisa (faixas, top-N com resto agrupado)
-- Descrição em toda medida e coluna — aparece como tooltip e ajuda na apresentação
+- Descrição em toda medida e coluna — vira tooltip e ajuda na apresentação
+- Colunas de ordenação (`sortByColumn`) nas dimensões: fazem legendas e eixos saírem na
+  ordem lógica em vez de alfabética, de graça
 
 ### Etapa 4 — Visual
 
@@ -73,6 +93,10 @@ Cores com função, não decoração:
 Quando a categoria não carrega julgamento (região, mês, modelo), uso **uma cor só**.
 
 Todo visual leva título e subtítulo dizendo **qual pergunta responde**.
+
+Medidas que valem lembrar: um slicer em dropdown precisa de **~50px de altura** para o
+cabeçalho e a caixa caberem — com menos, o dropdown sai cortado. A faixa de título que
+os abriga precisa de ~80px.
 
 ### Etapa 5 — Publicar
 
@@ -99,7 +123,9 @@ Você abre o link, digita o código, e eu sigo daí.
 
 Publicar sem erro **não significa que funciona**. Três checagens:
 
-1. **Consulta DAX** (`/executeQueries`) — confere se os números batem com a análise local
+1. **Consulta DAX** (`/executeQueries`) — confere se os números batem com a análise local.
+   Depois de refatorar o modelo, rodar os mesmos KPIs antes e depois: se algum número
+   mudou, a refatoração quebrou alguma relação
 2. **Export PDF** (`/ExportTo`) — se travar em 0%, o relatório está quebrado
 3. **Eu leio o PDF** e olho cada visual
 
@@ -142,6 +168,16 @@ com skeleton infinito, e o export trava em 0% sem mensagem de erro.
   mais simples remover a variation.
 - Em f-string de Python, `{{tag()}}` vira o literal `{tag()}` no arquivo. Isso derrubou
   o primeiro import.
+
+### No TMDL do modelo
+
+- **`relationship` não aceita descrição.** Um comentário `///` acima de um relacionamento
+  faz o import inteiro falhar com `Property 'description' is unknown` — e a mensagem não
+  diz onde está o problema. Descrição só em tabela, coluna, medida e parâmetro.
+- **`sourceColumn` usa o nome depois do rename.** Se a query M faz
+  `Table.RenameColumns(…, {{"motivo_original","Motivo"}})`, a coluna precisa de
+  `sourceColumn: Motivo`. Com o nome antigo o modelo importa sem erro e só o **refresh**
+  falha, com `column does not exist in the rowset`.
 
 ### Fonte de dados na nuvem
 
