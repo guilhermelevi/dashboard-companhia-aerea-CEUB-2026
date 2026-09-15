@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "txtf91462fee381a",
+  "name": "txt839cd274d1e0a",
   "position": {
-    "x": 24,
-    "y": 304,
-    "z": 1,
-    "width": 1232,
-    "height": 60
+    "x": 850,
+    "y": 180,
+    "z": 7,
+    "width": 405,
+    "height": 250
   },
   "visual": {
     "visualType": "textbox",
@@ -19,34 +19,11 @@
                 "horizontalTextAlignment": "left",
                 "textRuns": [
                   {
-                    "value": "Antes de escolher, pergunte:   ",
+                    "value": "",
                     "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#134E5C",
-                      "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif",
-                      "fontWeight": "bold"
-                    }
-                  },
-                  {
-                    "value": "1) qual pergunta quero responder?   2) quem vai consumir essa informação?   3) o usuário precisa identificar um padrão ou consultar um valor?   4) a visualização reduz ou aumenta o esforço de interpretação?",
-                    "textStyle": {
-                      "fontSize": "8.5pt",
-                      "color": "#63768A",
+                      "fontSize": "4pt",
+                      "color": "#FFFFFF",
                       "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif"
-                    }
-                  }
-                ]
-              },
-              {
-                "horizontalTextAlignment": "left",
-                "textRuns": [
-                  {
-                    "value": "A melhor visualização é a que responde à pergunta certa, para o público certo, com o menor esforço de interpretação possível.",
-                    "textStyle": {
-                      "fontSize": "8.5pt",
-                      "color": "#134E5C",
-                      "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif",
-                      "fontStyle": "italic"
                     }
                   }
                 ]
@@ -98,7 +75,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8EEF1'"
+                      "Value": "'#FFFFFF'"
                     }
                   }
                 }
@@ -158,28 +135,28 @@
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "0D"
                 }
               }
             },
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "16D"
+                  "Value": "0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "10D"
+                  "Value": "0D"
                 }
               }
             }

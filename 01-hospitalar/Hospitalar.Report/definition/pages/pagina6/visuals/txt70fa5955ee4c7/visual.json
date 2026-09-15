@@ -3,10 +3,10 @@
   "name": "txt70fa5955ee4c7",
   "position": {
     "x": 24,
-    "y": 376,
+    "y": 392,
     "z": 1,
     "width": 405,
-    "height": 324
+    "height": 308
   },
   "visual": {
     "visualType": "textbox",

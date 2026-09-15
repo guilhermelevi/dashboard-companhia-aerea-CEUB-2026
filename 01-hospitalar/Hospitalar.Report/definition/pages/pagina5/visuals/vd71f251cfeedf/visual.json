@@ -6,7 +6,7 @@
     "y": 88,
     "z": 6,
     "width": 1232,
-    "height": 300
+    "height": 332
   },
   "visual": {
     "visualType": "tableEx",
@@ -93,39 +93,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "Duração Média (min)"
-                }
-              },
-              "queryRef": "_Medidas.Duração Média (min)",
-              "nativeQueryRef": "Duração (min)"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
                   "Property": "Taxa de Internação"
                 }
               },
               "queryRef": "_Medidas.Taxa de Internação",
               "nativeQueryRef": "Internação"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Permanência Média (dias)"
-                }
-              },
-              "queryRef": "_Medidas.Permanência Média (dias)",
-              "nativeQueryRef": "Permanência"
             },
             {
               "field": {
@@ -168,20 +140,6 @@
               },
               "queryRef": "_Medidas.Margem %",
               "nativeQueryRef": "Margem"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Taxa de Mortalidade"
-                }
-              },
-              "queryRef": "_Medidas.Taxa de Mortalidade",
-              "nativeQueryRef": "Mortalidade"
             }
           ]
         }
@@ -294,7 +252,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8.5D"
                 }
               }
             },
@@ -339,7 +297,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8.5D"
                 }
               }
             },
@@ -566,7 +524,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'doze métricas por linha · clique no cabeçalho para reordenar'"
+                  "Value": "'nove métricas por linha · clique no cabeçalho para reordenar'"
                 }
               }
             },

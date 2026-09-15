@@ -224,15 +224,6 @@ table fAtendimento
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Classifica o atendimento entre superavitario e deficitario
-	column 'Resultado Financeiro' =
-			IF( fAtendimento[Margem] >= 0, "Superavitario", "Deficitario" )
-		dataType: string
-		lineageTag: 1d89439d-9544-4bf8-b92f-016ef6ed3532
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
 	partition fAtendimento = m
 		mode: import
 		queryGroup: Fato

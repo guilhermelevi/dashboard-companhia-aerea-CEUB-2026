@@ -83,7 +83,7 @@ Star schema: uma fato cercada por dez dimensões, todas filtrando no sentido ún
 | `dDesfecho` | 4 | alta, retorno, transferência, óbito |
 | `dPaciente` | 12 | sexo × faixa etária |
 | `dInternacao` | 2 | com e sem internação |
-| `_Medidas` | — | 49 medidas DAX, sem dados |
+| `_Medidas` | — | 48 medidas DAX, sem dados |
 
 **Por que `Diagnostico` não é filho de `Especialidade`.** Nos dados, o mesmo diagnóstico
 aparece em mais de uma área: "Infecção respiratória" ocorre em Clínica Médica e em Pediatria,

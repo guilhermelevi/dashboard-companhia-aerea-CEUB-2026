@@ -32,6 +32,12 @@ table _Medidas
 		displayFolder: 01 Volume
 		lineageTag: a3614aef-5654-4036-bc15-67ec0c8fa04c
 
+	/// Quantidade de especialidades presentes no contexto filtrado.
+	measure Especialidades = DISTINCTCOUNT( fAtendimento[Especialidade] )
+		formatString: #,0
+		displayFolder: 01 Volume
+		lineageTag: f91b0379-6ff5-4969-9656-3dd6e93465aa
+
 	/// Perfis demograficos distintos presentes no contexto.
 	measure 'Pacientes Distintos' = DISTINCTCOUNT( fAtendimento[Perfil_Paciente] )
 		formatString: #,0
@@ -157,18 +163,6 @@ table _Medidas
 		formatString: "R$" #,0.00;-"R$" #,0.00
 		displayFolder: 03 Financeiro
 		lineageTag: a894e3ad-20ce-45d4-ba80-8842e134d1ed
-
-	/// Atendimentos cujo custo superou o valor faturado.
-	measure 'Atendimentos Deficitários' = CALCULATE( [Atendimentos], fAtendimento[Resultado Financeiro] = "Deficitario" )
-		formatString: #,0
-		displayFolder: 03 Financeiro
-		lineageTag: cfe06b6e-6386-4be7-b3dc-dbd2cf8d15f2
-
-	/// Participacao dos atendimentos que fecharam no negativo.
-	measure '% Atendimentos Deficitários' = DIVIDE( [Atendimentos Deficitários], [Atendimentos] )
-		formatString: 0.0%
-		displayFolder: 03 Financeiro
-		lineageTag: aafb9efd-c9ea-4a94-a9c5-461227fddb58
 
 	/// Atendimentos com desfecho de obito.
 	measure Óbitos = CALCULATE( [Atendimentos], dDesfecho[Desfecho] = "Óbito" )

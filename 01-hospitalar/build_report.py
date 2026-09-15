@@ -23,9 +23,9 @@ def cols(n, gap=8):
 
 def filtros():
     """Três segmentadores na faixa de título — 50px é o mínimo para o dropdown não cortar."""
-    return [slicer((700, 17, 3, 178, 50), "dCalendario", "Ano", "Ano"),
-            slicer((886, 17, 4, 178, 50), "dHospital", "Hospital", "Unidade"),
-            slicer((1072, 17, 5, 184, 50), "dTipoAtendimento", "Tipo", "Tipo de atendimento")]
+    return [slicer((700, 14, 3, 178, 54), "dCalendario", "Ano", "Ano"),
+            slicer((886, 14, 4, 178, 54), "dHospital", "Hospital", "Unidade"),
+            slicer((1072, 14, 5, 184, 54), "dTipoAtendimento", "Tipo", "Tipo de atendimento")]
 
 def faixa_kpi(defs, y=88, h=76, fontsize=18):
     out = []
@@ -98,7 +98,7 @@ def pagina2():
     v += filtros()
     v += faixa_kpi([("Atendimentos", "Atendimentos da seleção", INST, 0),
                     ("Participação nos Atendimentos", "Participação no total", INST, 0),
-                    ("Ranking de Especialidades", "Posição no ranking", MUTED, 0),
+                    ("Especialidades", "Especialidades na seleção", MUTED, 0),
                     ("Receita", "Receita da seleção", INST, 1000)])
 
     v.append(treemap((X0, 172, 7, 810, 528),
@@ -108,6 +108,7 @@ def pagina2():
                      [("Atendimentos",)],
                      "Atendimentos por bloco, especialidade e diagnóstico",
                      "clique duas vezes num retângulo para descer o nível · a área revela quem domina",
+                     cores=["Clinicas", "Materno-infantil", "Cirurgicas", "Ambulatoriais"],
                      sort_measure="Atendimentos"))
 
     v.append(treemap((850, 172, 8, 406, 256),
@@ -115,6 +116,7 @@ def pagina2():
                      [("Receita",)],
                      "Receita por fonte pagadora",
                      "a mesma lógica aplicada ao faturamento",
+                     cores=["Suplementar", "Publico", "Particular"],
                      sort_measure="Receita"))
 
     v.append(textbox(vid("txt"), (850, 436, 9, 406, 264), [
@@ -145,7 +147,7 @@ def pagina3():
                     ("Satisfação Média", "Satisfação", INST, 0),
                     ("Taxa de Internação", "Taxa de internação", INST, 0)])
 
-    v.append(mapa((X0, 172, 7, 810, 528),
+    v.append(mapa((X0, 172, 7, 750, 528),
                   ("dHospital", "Unidade", "Unidade"),
                   ("dHospital", "Latitude", "Latitude"),
                   ("dHospital", "Longitude", "Longitude"),
@@ -153,7 +155,7 @@ def pagina3():
                   "Distribuição das unidades no Distrito Federal",
                   "clique numa bolha para filtrar o painel inteiro por unidade"))
 
-    v.append(tabela((850, 172, 8, 406, 256),
+    v.append(tabela((790, 172, 8, 466, 264),
                     [fcol("dHospital", "Hospital", "Unidade"),
                      fmea("Atendimentos", "Atend."),
                      fmea("Espera Média (min)", "Espera"),
@@ -162,7 +164,7 @@ def pagina3():
                     "a bolha compara grandeza; a tabela dá o valor exato",
                     sort_measure="Atendimentos"))
 
-    v.append(textbox(vid("txt"), (850, 436, 9, 406, 264), [
+    v.append(textbox(vid("txt"), (790, 444, 9, 466, 256), [
         par([run("A localização precisa ter significado", size="11pt", bold=True)]),
         spacer("6pt"),
         par([run("Nem todo dado geográfico pede um mapa. A presença de uma coluna “Cidade” não "
@@ -183,15 +185,15 @@ def pagina3():
 
 # ═════════════════════ PÁGINA 4 — MATRIZ ═════════════════════
 def pagina4():
-    v = [header(80, "Cruzamentos — como os valores se comportam em duas dimensões",
+    v = [header(80, "Cruzamentos — duas dimensões de uma vez",
                 "MATRIZ · linhas em hierarquia, colunas por tipo de atendimento, com drill-down")]
     v += filtros()
     v += faixa_kpi([("Atendimentos", "Atendimentos", INST, 1000),
                     ("Emergências", "Emergências", BAD, 0),
                     ("Permanência Média (dias)", "Permanência média", INST, 0),
-                    ("% Atendimentos Deficitários", "Atend. deficitários", WARN, 0)])
+                    ("% Alta", "Resolvidos com alta", OK, 0)])
 
-    v.append(matriz((X0, 172, 7, W, 452),
+    v.append(matriz((X0, 172, 7, W, 440),
                     [("dHospital", "Hospital", "Unidade"),
                      ("dEspecialidade", "Especialidade", "Especialidade"),
                      ("dDiagnostico", "Diagnostico", "Diagnóstico"),
@@ -204,7 +206,7 @@ def pagina4():
                     columns=[("dTipoAtendimento", "Tipo", "Tipo")],
                     sort_measure="Atendimentos"))
 
-    v.append(textbox(vid("txt"), (X0, 632, 8, W, 68), [
+    v.append(textbox(vid("txt"), (X0, 620, 8, W, 80), [
         par([run("Por que matriz e não tabela aqui.   ", size="9pt", color=INST, bold=True),
              run("A tabela lista registros lado a lado; a matriz ", size="8.5pt", color=MUTED),
              run("cruza", size="8.5pt", color=INST, bold=True),
@@ -223,36 +225,31 @@ def pagina5():
                 "TABELA · consulta precisa, múltiplas métricas por linha, pronta para exportar")]
     v += filtros()
 
-    v.append(tabela((X0, 88, 6, W, 300),
+    v.append(tabela((X0, 88, 6, W, 332),
                     [fcol("dEspecialidade", "Especialidade", "Especialidade"),
                      fcol("dEspecialidade", "Bloco", "Bloco"),
                      fmea("Atendimentos", "Atendimentos"),
                      fmea("Participação nos Atendimentos", "Participação"),
                      fmea("Espera Média (min)", "Espera (min)"),
-                     fmea("Duração Média (min)", "Duração (min)"),
                      fmea("Taxa de Internação", "Internação"),
-                     fmea("Permanência Média (dias)", "Permanência"),
                      fmea("Satisfação Média", "Satisfação"),
                      fmea("Ticket Médio", "Ticket médio"),
-                     fmea("Margem %", "Margem"),
-                     fmea("Taxa de Mortalidade", "Mortalidade")],
+                     fmea("Margem %", "Margem")],
                     "Indicadores por especialidade",
-                    "doze métricas por linha · clique no cabeçalho para reordenar",
+                    "nove métricas por linha · clique no cabeçalho para reordenar",
                     sort_measure="Atendimentos"))
 
-    v.append(tabela((X0, 396, 7, 604, 304),
+    v.append(tabela((X0, 428, 7, 604, 272),
                     [fcol("dHospital", "Hospital", "Unidade"),
-                     fcol("dHospital", "Cidade", "Município"),
                      fmea("Atendimentos", "Atendimentos"),
                      fmea("Espera Média (min)", "Espera"),
                      fmea("Satisfação Média", "Satisfação"),
-                     fmea("% Dentro da Meta de Espera", "Dentro da meta"),
-                     fmea("Margem %", "Margem")],
+                     fmea("% Dentro da Meta de Espera", "Dentro da meta")],
                     "Indicadores por unidade",
                     "o número exato que o mapa da página 3 só aproxima",
                     sort_measure="Atendimentos"))
 
-    v.append(textbox(vid("txt"), (652, 396, 7, 604, 304), [
+    v.append(textbox(vid("txt"), (652, 428, 7, 604, 272), [
         par([run("Tabela ou gráfico? Depende da pergunta", size="11pt", bold=True)]),
         spacer("6pt"),
         par([run("📊  Use o gráfico quando…", size="9pt", color=INST, bold=True)]),
@@ -300,7 +297,7 @@ def pagina6():
             par([run(onde, size="8.5pt", color=MUTED)])],
             bg=CARD, border=True, pad=(14, 14, 12, 12)))
 
-    v.append(textbox(vid("txt"), (X0, 304, 1, W, 60), [
+    v.append(textbox(vid("txt"), (X0, 304, 1, W, 80), [
         par([run("Antes de escolher, pergunte:   ", size="9pt", color=INST, bold=True),
              run("1) qual pergunta quero responder?   2) quem vai consumir essa informação?   "
                  "3) o usuário precisa identificar um padrão ou consultar um valor?   "
@@ -326,7 +323,7 @@ def pagina6():
          "pactuados. O problema da rede é de fluxo, não financeiro.", BAD)]
     for i, (x, w) in enumerate(cols(3)):
         num, tit, txt, cor = insights[i]
-        v.append(textbox(vid("txt"), (x, 376, 1, w, 324), [
+        v.append(textbox(vid("txt"), (x, 392, 1, w, 308), [
             par([run(num + "   ", size="15pt", color=cor, bold=True)]),
             par([run(tit, size="12pt", color=INST, bold=True)]),
             spacer("8pt"),

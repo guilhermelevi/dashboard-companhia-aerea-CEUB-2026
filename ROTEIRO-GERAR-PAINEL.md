@@ -121,7 +121,28 @@ Você abre o link, digita o código, e eu sigo daí.
 
 ### Etapa 6 — Validar de verdade
 
-Publicar sem erro **não significa que funciona**. Três checagens:
+A validação tem **duas camadas**, e confundi-las é o erro mais caro do processo.
+
+#### Camada 1 — estrutural, roda local, antes de publicar
+
+Um script `validar.py` na raiz do projeto. Ele pega o que **passa no import e quebra em
+silêncio**:
+
+- todo campo referenciado em cada `visual.json` existe mesmo no modelo (tabela, coluna, medida)
+- os schemas do PBIR estão nas versões que renderizam (ver tabela em *Armadilhas*)
+- nenhum visual extrapola a página, tem dimensão zero ou se sobrepõe na mesma camada `z`
+- `sourceColumn` usa o nome **depois** do `Table.RenameColumns`
+- todo visual autônomo tem título explicativo
+- todo JSON do projeto é parseável
+- os relacionamentos apontam para colunas que existem
+
+É barato, roda em segundo e pega erro de digitação em nome de medida — que no Fabric
+aparece como visual vazio, sem mensagem.
+
+#### Camada 2 — de renderização, só existe depois de publicar
+
+**`validar.py` não sabe se o painel desenha.** Ele confere estrutura, não pixels. Um
+treemap pode passar em tudo e sair ilegível. Três checagens, nessa ordem:
 
 1. **Consulta DAX** (`/executeQueries`) — confere se os números batem com a análise local.
    Depois de refatorar o modelo, rodar os mesmos KPIs antes e depois: se algum número
@@ -131,6 +152,18 @@ Publicar sem erro **não significa que funciona**. Três checagens:
 
 A terceira é a que pega mais coisa. No painel aéreo ela revelou o mapa com erro,
 formas com a cor errada e categorias esmagando o gráfico — nada disso aparece em log.
+
+> **Não diga que está pronto antes da camada 2.** Projeto que passou só na camada 1 está
+> *construído e conferido*, não *validado*. A diferença é honesta e importa.
+
+### Etapa 7 — conferir os números que você afirma
+
+Todo insight escrito no painel é uma afirmação sobre os dados, e precisa ser recalculado
+contra a fonte antes de entrar. No painel hospitalar eu escrevi que uma especialidade
+superava "as outras seis somadas" — a soma dava 44.872 contra 24.174. Só apareceu porque
+rodei a conta.
+
+Afirmação em dashboard não é texto de apoio: é resultado. Trate como tal.
 
 ---
 
@@ -179,6 +212,133 @@ com skeleton infinito, e o export trava em 0% sem mensagem de erro.
   `sourceColumn: Motivo`. Com o nome antigo o modelo importa sem erro e só o **refresh**
   falha, com `column does not exist in the rowset`.
 
+### Publicar pela API: o `definition.pbir` tem DUAS formas
+
+O arquivo do repositório e o que vai no payload **não são o mesmo**:
+
+| | Local (Desktop) | Publicado (API) |
+|---|---|---|
+| `$schema` | `definitionProperties/1.0.0` | `definitionProperties/**2.0.0**` |
+| referência | `byPath` → `../<Projeto>.SemanticModel` | `byConnection` → `connectionString` |
+
+Mandar o arquivo local direto falha com `Required properties are missing from object:
+pbiServiceModelId, pbiModelVirtualServerName, …` — mensagem que sugere campos legados e
+manda para o caminho errado. O que faltava era a **versão do schema**.
+
+A connection string tem formato exato, com aspas no Data Source e minúsculas no resto:
+
+```
+Data Source="powerbi://api.powerbi.com/v1.0/myorg/<Workspace>";initial catalog=<Modelo>;integrated security=ClaimsToken;semanticmodelid=<guid>
+```
+
+> Não adivinhe: `POST /v1/workspaces/{ws}/reports/{id}/getDefinition` num relatório que
+> **já funciona** devolve o gabarito exato. Foi assim que este apareceu.
+
+### `updateDefinition` precisa do workspace no caminho
+
+`POST /v1/semanticModels/{id}/updateDefinition` devolve **404 EntityNotFound**, como se o
+modelo não existisse. O correto é `POST /v1/workspaces/{ws}/semanticModels/{id}/updateDefinition`.
+Mesma regra para `reports`.
+
+### Anotação órfã derruba o import inteiro
+
+Remover uma coluna do TMDL com regex é fácil demais deixar para trás o bloco
+`annotation SummarizationSetBy` que vinha depois dela. O import falha com:
+
+```
+TMDL objects cannot be merged because both declare the same property: value
+  1st object: type=Annotation, name='SummarizationSetBy', path='./tables/fAtendimento'
+```
+
+A mensagem não diz qual coluna. A checagem é trivial e vale a pena no `validar.py`:
+**número de colunas == número de anotações `SummarizationSetBy`** em cada tabela.
+
+### Tema custom pela API não resolve o arquivo
+
+Registrar um tema em `StaticResources/RegisteredResources/` com
+`resourcePackages[].items[].path = "Hospitalar.json"` **importa sem erro e não aplica**:
+o Fabric grava o item como `"path": "Hospitalar"`, sem a extensão, e o arquivo nunca é
+encontrado. O relatório fica com a paleta padrão e nada avisa.
+
+Descobre-se comparando o que você mandou com o que voltou do `getDefinition`.
+
+Se as cores importam, **defina-as visual a visual** — que é a recomendação geral deste
+roteiro de qualquer forma, porque assim o painel fica correto mesmo sem o tema.
+
+### Treemap ignora cor por valor
+
+`fillRule`/`linearGradient2` publica intacto no `dataPoint` do treemap e **não tem efeito
+nenhum** — o visual não tem balde de saturação por medida. Para fugir da paleta categórica
+(cada retângulo de um matiz, o "excesso de cores" que a aula manda evitar), fixe cor a cor
+por igualdade de valor:
+
+```json
+"selector": {"data": [{"scopeId": {"Comparison": {
+  "ComparisonKind": 0,
+  "Left":  {"Column": {"Expression": {"SourceRef": {"Entity": "dEspecialidade"}}, "Property": "Bloco"}},
+  "Right": {"Literal": {"Value": "'Clinicas'"}} }}}]}
+```
+
+Uma rampa de luminosidade no mesmo matiz mantém os retângulos distinguíveis sem virar
+arco-íris. Vale para o primeiro nível do drill; os níveis abaixo voltam à paleta padrão.
+
+### KPI estruturalmente vazio
+
+Antes de colocar uma medida num cartão, confira se ela **pode** ter valor nesta base.
+Aqui, `% Atendimentos Deficitários` saía `(Blank)` em qualquer filtro: nenhum dos 100 mil
+atendimentos tem margem negativa (a menor é R$ 14,81). O DAX estava certo; o indicador é
+que não existia. Mesma coisa com medidas de ranking protegidas por `HASONEVALUE` — corretas
+no detalhe, `(Blank)` no cartão ao abrir a página.
+
+Um cartão `(Blank)` parece defeito de software para quem avalia. Ou dê um valor de
+fallback, ou troque por um indicador que exista.
+
+### No relatório: o que passa na validação e mesmo assim fica ruim
+
+Nenhuma destas quebra o import. Todas estragam a leitura, e só aparecem no PDF.
+
+- **Matriz com colunas demais.** Medidas × categorias da coluna multiplicam: 6 medidas
+  cruzadas por 3 tipos viram 18 colunas de valor em 1.232px — 65px cada, ilegível. Três
+  medidas é o teto prático quando há categoria na coluna; o resto vai para a página de tabela.
+- **Treemap com categorias minúsculas.** A própria aula avisa. Com dezenas de folhas, os
+  retângulos do fim da cauda somem. Use drill-down em vez de despejar todos os níveis de uma vez.
+- **Slicer em dropdown precisa de ~50px de altura.** Com menos, o dropdown sai cortado. A
+  faixa de título que os abriga precisa de ~80px.
+- **Visual composto não leva título próprio.** Quando um cartão grande, um rótulo de contexto
+  e um sparkline formam um painel único, só o cartão de cima é titulado — os outros dois são
+  peças, não visuais. Ensine isso ao `validar.py` (um visual sem moldura é componente), senão
+  ele acusa falso positivo.
+- **Sobreposição na mesma camada `z`.** Painéis compostos empilham um fundo e três visuais em
+  `z` diferentes de propósito. O que nunca pode acontecer é dois visuais se sobreporem no
+  **mesmo** `z` — cheque isso, é sempre erro de aritmética de layout.
+
+### Mexer na estrutura do repositório quebra o que já está publicado
+
+`pCaminhoCSV` guarda o caminho **dentro** do repo. Renomear o repositório é seguro (o GitHub
+redireciona e os caminhos se preservam), mas **mover pastas não é**: o modelo já publicado
+continua apontando para o caminho antigo e o refresh falha com "arquivo não encontrado".
+
+Depois de reorganizar, atualize o parâmetro no modelo publicado:
+
+```
+POST /v1.0/myorg/groups/{ws}/datasets/{id}/Default.UpdateParameters
+{"updateDetails":[{"name":"pCaminhoCSV","newValue":"<novo/caminho.csv>"}]}
+```
+
+E só então dispare um refresh. Alterar o `.tmdl` local não muda nada no que está no ar.
+
+### CSV brasileiro: separador e decimal
+
+Arquivo com `;` como separador **e vírgula decimal** precisa dos dois ajustes:
+
+```
+Csv.Document( …, [Delimiter = ";", Columns = 21, Encoding = 65001] )
+Table.TransformColumnTypes( …, {…}, "pt-BR" )
+```
+
+Sem a cultura `"pt-BR"` no segundo, `1272,01` é lido como `127201` — cem vezes maior, sem
+erro nenhum. O painel abre, os totais ficam absurdos, e nada no log indica o motivo.
+
 ### Fonte de dados na nuvem
 
 `File.Contents` com caminho local **não funciona** no Service. Opções, da mais simples:
@@ -208,9 +368,43 @@ com skeleton infinito, e o export trava em 0% sem mensagem de erro.
 └── projeto-powerbi/            ← repo git
     ├── <Projeto>.SemanticModel/    modelo em TMDL
     ├── <Projeto>.Report/           páginas e visuais em PBIR
+    ├── dados/<dados>.csv           fonte lida por HTTP
+    ├── pbir.py                     fábricas de visual (paleta, molduras, campos)
+    ├── build_report.py             gera definition/pages inteiro
+    ├── validar.py                  checagens da camada 1
     ├── README.md                   como publicar e republicar
     └── MAPA-DAS-PERGUNTAS.md       pergunta → visual → justificativa
 ```
+
+**Gere os visuais por código, não à mão.** Um painel de 6 páginas passa de 70 arquivos
+`visual.json`, cada um com 200 linhas de JSON aninhado. Escrever à mão é inviável e o diff
+fica ilegível. Duas regras que fazem isso funcionar:
+
+- **nomes determinísticos** — derive o nome do visual de um contador, não de um UUID
+  aleatório. Assim reexecutar o gerador produz arquivos idênticos e o `git diff` mostra
+  só o que mudou de verdade
+- **uma fábrica por tipo de visual**, com a moldura (borda, fundo, título, subtítulo,
+  padding) centralizada. A consistência visual sai de graça e mudar a paleta é uma linha
+
+### O `.pbix` sai do Service, não da máquina
+
+É um binário que só o Power BI produz — não existe caminho a partir dos arquivos-texto
+do PBIP. Mas **publicar destrava o export**, e aí não precisa de Desktop nem de Windows:
+
+```
+GET /v1.0/myorg/groups/{ws}/reports/{id}/Export
+```
+
+Funciona mesmo quando o botão da interface está cinza, e o arquivo vem com o `DataModel`
+embutido — abre sozinho, sem depender do Fabric. Confira com
+`zipfile.ZipFile(p).namelist()`: tem que aparecer `DataModel`.
+
+Ou seja: a ordem é **publicar → validar → exportar o `.pbix`**, nunca o contrário. E se
+o painel mudar depois, o `.pbix` precisa ser exportado de novo — ele é um retrato, não um
+link.
+
+A rota do Desktop (duplo clique no `.pbip`, **Arquivo → Salvar como → .pbix**) continua
+valendo quando não há workspace.
 
 Para baixar o `.pbix` pronto do Service (funciona mesmo quando o botão da interface está cinza):
 
@@ -224,6 +418,12 @@ GET /v1.0/myorg/groups/{ws}/reports/{id}/Export
 
 Se o enunciado não exigir Power BI, um **HTML único com os dados embutidos** costuma ser
 melhor: abre com duplo clique, não depende de licença, de nuvem nem de refresh, e roda em
-qualquer máquina. Foi a abordagem do exercício hospitalar, em `01-Hospitalar/`.
+qualquer máquina. Foi a primeira entrega do exercício hospitalar
+(`01-Hospitalar/dashboard-hospitalar.html`), com os cinco gráficos tradicionais do enunciado.
+
+O mesmo exercício ganhou depois uma versão Power BI (`01-Hospitalar/projeto-powerbi/`) com os
+cinco visuais **especializados** da aula 05 — cartões/KPIs, treemap, mapa, matriz e tabela.
+Os dois convivem: o HTML entrega sem dependência, o PBIP entrega o modelo semântico e o
+drill-down que o HTML não tem.
 
 Diga qual dos dois você quer — ou me deixe recomendar depois de ler o enunciado.

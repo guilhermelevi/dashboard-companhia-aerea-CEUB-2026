@@ -3,10 +3,10 @@
   "name": "v05f5b26c27893",
   "position": {
     "x": 24,
-    "y": 396,
+    "y": 428,
     "z": 7,
     "width": 604,
-    "height": 304
+    "height": 272
   },
   "visual": {
     "visualType": "tableEx",
@@ -28,20 +28,6 @@
               },
               "queryRef": "dHospital.Hospital",
               "nativeQueryRef": "Unidade"
-            },
-            {
-              "field": {
-                "Column": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "dHospital"
-                    }
-                  },
-                  "Property": "Cidade"
-                }
-              },
-              "queryRef": "dHospital.Cidade",
-              "nativeQueryRef": "Município"
             },
             {
               "field": {
@@ -98,20 +84,6 @@
               },
               "queryRef": "_Medidas.% Dentro da Meta de Espera",
               "nativeQueryRef": "Dentro da meta"
-            },
-            {
-              "field": {
-                "Measure": {
-                  "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas"
-                    }
-                  },
-                  "Property": "Margem %"
-                }
-              },
-              "queryRef": "_Medidas.Margem %",
-              "nativeQueryRef": "Margem"
             }
           ]
         }
@@ -224,7 +196,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8.5D"
                 }
               }
             },
@@ -269,7 +241,7 @@
             "fontSize": {
               "expr": {
                 "Literal": {
-                  "Value": "9D"
+                  "Value": "8.5D"
                 }
               }
             },

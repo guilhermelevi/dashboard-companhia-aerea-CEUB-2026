@@ -1,7 +1,7 @@
 # Painel Hospitalar — Visualizações Especializadas
 
 Projeto Power BI (formato **PBIP/PBIR**) pronto para publicar no **Microsoft Fabric**.
-Star schema com 10 dimensões, 49 medidas DAX e relatório de 6 páginas.
+Star schema com 10 dimensões, 48 medidas DAX e relatório de 6 páginas.
 
 Aplica os cinco tipos de visualização da aula 05 — **Cartões/KPIs, Treemap, Mapa,
 Matriz e Tabela** — à base de 100 mil atendimentos, jan/2024 a jul/2026.
@@ -25,7 +25,7 @@ A fato guarda apenas chaves estrangeiras e métricas. Todo atributo descritivo
 
 ```
 Hospitalar.pbip                      ← abre o projeto no Power BI Desktop
-Hospitalar.SemanticModel/            ← modelo: 12 tabelas, 10 relações, 49 medidas DAX
+Hospitalar.SemanticModel/            ← modelo: 12 tabelas, 10 relações, 48 medidas DAX
 Hospitalar.Report/                   ← relatório: 6 páginas, 75 visuais
 dados/hospital_atendimentos_100k.csv ← fonte lida pelo modelo via HTTP
 build_report.py + pbir.py            ← geram as páginas PBIR
@@ -51,6 +51,16 @@ valor atual, meta, variação, período anterior e tendência.
 
 ---
 
+## Status: publicado no Fabric
+
+| Item | Link |
+|---|---|
+| Relatório | https://app.powerbi.com/groups/86e5562b-f700-4471-96e7-7dacb7c7973c/reports/6893f811-0e5f-47c8-9a21-5643307f4414 |
+| Semantic model | https://app.powerbi.com/groups/86e5562b-f700-4471-96e7-7dacb7c7973c/datasets/b5e7424b-b0b2-4995-b236-166c95b15737 |
+
+Workspace **Hospitalar CEUB**. Publicado pela REST API, refresh completo com as 100 mil
+linhas, e os dez indicadores conferidos por consulta DAX contra o cálculo local.
+
 ## Fonte de dados
 
 O CSV é lido por HTTP, com credencial anônima — sem gateway e sem OneDrive. Dois parâmetros
@@ -61,12 +71,7 @@ do modelo controlam isso:
 | `pUrlBase` | `https://raw.githubusercontent.com` |
 | `pCaminhoCSV` | `guilhermelevi/visualizacao-dados-CEUB-2026/main/01-hospitalar/dados/hospital_atendimentos_100k.csv` |
 
-> ⚠️ **O repositório ainda não existe.** Enquanto ele não for criado e tornado público, o
-> refresh falha com "arquivo não encontrado". Duas saídas:
->
-> - **Publicar o repo** com este conteúdo e o nome acima — nada mais muda;
-> - **Usar outro nome/host**: edite os dois parâmetros no Power BI (Transformar dados →
->   Gerenciar parâmetros) ou em `Hospitalar.SemanticModel/definition/expressions.tmdl`.
+> Se o repositório voltar a ser privado, o refresh quebra: a URL raw precisa de acesso anônimo.
 >
 > Para abrir só no Desktop, sem nuvem, troque a consulta `Fonte` por
 > `Csv.Document( File.Contents("...\dados\hospital_atendimentos_100k.csv"), ... )`.
@@ -114,17 +119,16 @@ leitura do PDF visual a visual. A terceira é a que pega mais coisa.
 
 ## Entregar o `.pbix`
 
-**A. Do Desktop** — duplo clique em `Hospitalar.pbip` em qualquer máquina Windows,
-depois **Arquivo → Salvar como → .pbix**. Leva 30 segundos.
-
-**B. Do Service**, depois de publicado:
+**Já está pronto** em `../ENTREGA/Hospitalar.pbix` — 4 MB, com o `DataModel` embutido,
+abre em qualquer Power BI Desktop sem depender do Fabric. Foi exportado do Service com:
 
 ```
 GET /v1.0/myorg/groups/{ws}/reports/{id}/Export
 ```
 
-Funciona mesmo quando o botão da interface está cinza. Entregue também o
-`hospital_atendimentos_100k.csv`.
+> O `.pbix` é um retrato, não um link. Se o painel mudar, exporte de novo.
+
+Entregue também o `hospital_atendimentos_100k.csv`, que está na mesma pasta.
 
 ---
 

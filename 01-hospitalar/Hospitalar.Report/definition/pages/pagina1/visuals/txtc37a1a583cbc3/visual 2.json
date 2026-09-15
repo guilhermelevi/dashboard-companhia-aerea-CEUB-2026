@@ -1,6 +1,6 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "txt9f1db897ddeb3",
+  "name": "txtc37a1a583cbc3",
   "position": {
     "x": 0,
     "y": 0,
@@ -19,7 +19,7 @@
                 "horizontalTextAlignment": "left",
                 "textRuns": [
                   {
-                    "value": "Leitura do painel — qual pergunta cada visual responde",
+                    "value": "Rede Hospitalar — Painel de Indicadores",
                     "textStyle": {
                       "fontSize": "16pt",
                       "color": "#FFFFFF",
@@ -33,7 +33,7 @@
                 "horizontalTextAlignment": "left",
                 "textRuns": [
                   {
-                    "value": "a visualização se escolhe pela pergunta, não pelo estilo visual",
+                    "value": "Aula 05 · Visualizações especializadas  •  100 mil atendimentos  •  jan/2024 a jul/2026",
                     "textStyle": {
                       "fontSize": "9pt",
                       "color": "#BFD4DC",

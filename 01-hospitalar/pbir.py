@@ -132,7 +132,25 @@ def spacer(size="4pt"):
 
 # ---------- os cinco visuais especializados da aula 05 ----------
 
-def treemap(pos, group, values, title, subtitle, *, details=None, colors=None, sort_measure=None):
+def cor_categoria(entity, prop, valor, hexc):
+    """Fixa a cor de UMA categoria do visual, por igualdade de valor.
+
+    O treemap não aceita saturação por medida (fillRule não tem efeito) e a paleta
+    categórica padrão pinta cada retângulo de um matiz diferente — o "excesso de
+    cores" que a aula manda evitar, já que bloco assistencial não carrega
+    julgamento. Fixando valor a valor mantemos um matiz só, variando a luminosidade
+    para os retângulos continuarem distinguíveis."""
+    return {"properties": {"fill": solid(hexc)},
+            "selector": {"data": [{"scopeId": {"Comparison": {
+                "ComparisonKind": 0,
+                "Left": {"Column": {"Expression": {"SourceRef": {"Entity": entity}},
+                                    "Property": prop}},
+                "Right": {"Literal": {"Value": "'%s'" % valor}}}}}]}}
+
+# rampa de matiz único, do mais escuro (maior) ao mais claro
+RAMPA = ["#134E5C", "#2E8FA3", "#57A9BA", "#84C3D0", "#AFDAE2"]
+
+def treemap(pos, group, values, title, subtitle, *, details=None, cores=None, sort_measure=None):
     """TREEMAP — participação e hierarquia. group: lista de (entity, prop, alias)."""
     q = qs(Group=[fcol(*g) for g in group],
            Details=[fcol(*d_) for d_ in (details or [])],
@@ -141,10 +159,9 @@ def treemap(pos, group, values, title, subtitle, *, details=None, colors=None, s
     o = {"labels": props(show=b(True), fontSize=d(9), color=solid("#FFFFFF"), bold=b(True)),
          "categoryLabels": props(show=b(True), fontSize=d("8.5"), color=solid("#FFFFFF")),
          "legend": props(show=b(False))}
-    if colors:
-        o["dataPoint"] = [{"properties": {"fill": solid(c)},
-                           "selector": {"data": [{"dataViewWildcard": {"matchingOption": 0}}]}}
-                          for c in colors[:1]]
+    if cores:
+        ent, prop = group[0][0], group[0][1]
+        o["dataPoint"] = [cor_categoria(ent, prop, v, RAMPA[i]) for i, v in enumerate(cores)]
     return visual(vid(), pos, "treemap", q, o, frame(title, subtitle))
 
 def mapa(pos, category, lat, lon, size, title, subtitle, *, bubble=-10, color=INST):
@@ -164,8 +181,8 @@ def _grid_objects(*, vertical=True, stepped=None, row_subtotals=None, col_subtot
                        gridHorizontal=b(True), gridHorizontalColor=solid(BORDER),
                        rowPadding=d(3), outlineColor=solid(BORDER)),
          "columnHeaders": props(fontColor=solid("#FFFFFF"), backColor=solid(INST),
-                                fontSize=d(9), bold=b(True), alignment=s("Center"), wordWrap=b(True)),
-         "values": props(fontColor=solid(INST), fontSize=d(9),
+                                fontSize=d("8.5"), bold=b(True), alignment=s("Center"), wordWrap=b(True)),
+         "values": props(fontColor=solid(INST), fontSize=d("8.5"),
                          backColorPrimary=solid(CARD), backColorSecondary=solid("#F8FAFC"))}
     if stepped is not None:
         o["rowHeaders"] = props(fontColor=solid(INST), fontSize=d(9),
@@ -184,7 +201,7 @@ def matriz(pos, rows, values, title, subtitle, *, columns=None, sort_measure=Non
            Columns=[fcol(*c) for c in (columns or [])],
            Values=[fmea(*v) for v in values])
     if sort_measure: q["sortDefinition"] = sort_by_measure(sort_measure)
-    o = _grid_objects(stepped=True, row_subtotals=True, col_subtotals=bool(columns))
+    o = _grid_objects(stepped=True, row_subtotals=True, col_subtotals=False)
     return visual(vid(), pos, "pivotTable", q, o, frame(title, subtitle))
 
 def tabela(pos, values, title, subtitle, *, sort_measure=None, sort_column=None, totals=True):

@@ -28,6 +28,13 @@ for path in glob.glob(os.path.join(MODEL, "tables", "*.tmdl")):
     tables[tname] = cols
     for m in re.finditer(r"^\tmeasure ('[^']+'|\S+)", txt, re.M):
         measures.add(m.group(1).strip("'"))
+    # Anotação órfã: remover uma coluna com regex é fácil demais deixar para trás o
+    # bloco 'annotation SummarizationSetBy'. O TMDL rejeita o import inteiro com
+    # "objects cannot be merged because both declare the same property" e não diz onde.
+    n_ann = txt.count("annotation SummarizationSetBy")
+    check(n_ann == len(cols),
+          "%s: %d colunas para %d anotações SummarizationSetBy — anotação órfã ou faltando"
+          % (tname, len(cols), n_ann))
 
 print("modelo: %d tabelas, %d colunas, %d medidas"
       % (len(tables), sum(len(c) for c in tables.values()), len(measures)))

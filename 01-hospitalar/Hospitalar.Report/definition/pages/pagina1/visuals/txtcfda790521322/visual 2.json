@@ -1,12 +1,12 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
-  "name": "txt609f26073ad06",
+  "name": "txtcfda790521322",
   "position": {
-    "x": 1016,
-    "y": 96,
-    "z": 1,
-    "width": 238,
-    "height": 196
+    "x": 437,
+    "y": 180,
+    "z": 7,
+    "width": 405,
+    "height": 250
   },
   "visual": {
     "visualType": "textbox",
@@ -19,64 +19,10 @@
                 "horizontalTextAlignment": "left",
                 "textRuns": [
                   {
-                    "value": "Tabela",
-                    "textStyle": {
-                      "fontSize": "11pt",
-                      "color": "#63768A",
-                      "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif",
-                      "fontWeight": "bold"
-                    }
-                  }
-                ]
-              },
-              {
-                "horizontalTextAlignment": "left",
-                "textRuns": [
-                  {
                     "value": "",
                     "textStyle": {
-                      "fontSize": "6pt",
+                      "fontSize": "4pt",
                       "color": "#FFFFFF",
-                      "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif"
-                    }
-                  }
-                ]
-              },
-              {
-                "horizontalTextAlignment": "left",
-                "textRuns": [
-                  {
-                    "value": "Qual é exatamente o valor de cada informação?",
-                    "textStyle": {
-                      "fontSize": "9pt",
-                      "color": "#134E5C",
-                      "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif",
-                      "fontStyle": "italic"
-                    }
-                  }
-                ]
-              },
-              {
-                "horizontalTextAlignment": "left",
-                "textRuns": [
-                  {
-                    "value": "",
-                    "textStyle": {
-                      "fontSize": "6pt",
-                      "color": "#FFFFFF",
-                      "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif"
-                    }
-                  }
-                ]
-              },
-              {
-                "horizontalTextAlignment": "left",
-                "textRuns": [
-                  {
-                    "value": "Página 5 · 12 métricas por especialidade e 7 por unidade.",
-                    "textStyle": {
-                      "fontSize": "8.5pt",
-                      "color": "#63768A",
                       "fontFamily": "Segoe UI, wf_segoe-ui_normal, helvetica, arial, sans-serif"
                     }
                   }
@@ -189,28 +135,28 @@
             "left": {
               "expr": {
                 "Literal": {
-                  "Value": "14D"
+                  "Value": "0D"
                 }
               }
             },
             "top": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "0D"
                 }
               }
             },
             "right": {
               "expr": {
                 "Literal": {
-                  "Value": "14D"
+                  "Value": "0D"
                 }
               }
             },
             "bottom": {
               "expr": {
                 "Literal": {
-                  "Value": "12D"
+                  "Value": "0D"
                 }
               }
             }

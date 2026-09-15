@@ -3,10 +3,10 @@
   "name": "v87de32d0d4a7e",
   "position": {
     "x": 700,
-    "y": 17,
+    "y": 14,
     "z": 3,
     "width": 178,
-    "height": 50
+    "height": 54
   },
   "visual": {
     "visualType": "slicer",

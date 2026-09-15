@@ -23,11 +23,11 @@
                       "Entity": "_Medidas"
                     }
                   },
-                  "Property": "% Atendimentos Deficitários"
+                  "Property": "% Alta"
                 }
               },
-              "queryRef": "_Medidas.% Atendimentos Deficitários",
-              "nativeQueryRef": "% Atendimentos Deficitários"
+              "queryRef": "_Medidas.% Alta",
+              "nativeQueryRef": "% Alta"
             }
           ]
         }
@@ -42,7 +42,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E8A33D'"
+                      "Value": "'#2E9B6B'"
                     }
                   }
                 }
@@ -195,7 +195,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Atend. deficitários'"
+                  "Value": "'Resolvidos com alta'"
                 }
               }
             },
