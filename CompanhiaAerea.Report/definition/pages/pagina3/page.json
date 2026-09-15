@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/1.0.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
   "name": "pagina3",
   "displayName": "3 · Comercial",
   "displayOption": "FitToPage",
@@ -48,55 +48,6 @@
             "expr": {
               "Literal": {
                 "Value": "0D"
-              }
-            }
-          }
-        }
-      }
-    ],
-    "outspacePane": [
-      {
-        "properties": {
-          "backgroundColor": {
-            "solid": {
-              "color": {
-                "expr": {
-                  "Literal": {
-                    "Value": "'#FFFFFF'"
-                  }
-                }
-              }
-            }
-          },
-          "foregroundColor": {
-            "solid": {
-              "color": {
-                "expr": {
-                  "Literal": {
-                    "Value": "'#123A5E'"
-                  }
-                }
-              }
-            }
-          },
-          "transparency": {
-            "expr": {
-              "Literal": {
-                "Value": "0D"
-              }
-            }
-          },
-          "titleSize": {
-            "expr": {
-              "Literal": {
-                "Value": "10D"
-              }
-            }
-          },
-          "searchTextSize": {
-            "expr": {
-              "Literal": {
-                "Value": "9D"
               }
             }
           }
