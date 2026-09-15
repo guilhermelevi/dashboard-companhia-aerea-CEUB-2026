@@ -27,11 +27,6 @@ table fVoos
 		lineageTag: 4209f6c3-78bf-47c9-b15e-269d43a59ac6
 		summarizeBy: none
 		sourceColumn: data_voo
-		variation Variacao
-			isDefault
-			relationship: rel_calendario_voos
-			defaultHierarchy: dCalendario.'Hierarquia de Datas'
-
 
 		annotation SummarizationSetBy = Automatic
 
@@ -493,24 +488,15 @@ table fVoos
 		queryGroup: Fato
 		source =
 				let
-				    // Le o CSV publicado no OneDrive corporativo / SharePoint.
-				    // A autenticacao e feita com a Conta Organizacional, sem necessidade de gateway.
-				    Pasta = SharePoint.Files( pUrlOneDrive, [ApiVersion = 15] ),
-				    Arquivo = Table.SelectRows( Pasta, each Text.Lower( [Name] ) = Text.Lower( pNomeArquivo ) ),
-				    Conteudo =
-				        if Table.IsEmpty( Arquivo )
-				        then error "Arquivo '" & pNomeArquivo & "' nao encontrado em " & pUrlOneDrive
-				        else Arquivo{0}[Content],
+				    // O CSV e lido por HTTP a partir do repositorio publico do projeto.
+				    // RelativePath mantem a fonte estatica, o que permite atualizacao agendada sem gateway.
+				    Conteudo = Web.Contents( pUrlBase, [RelativePath = pCaminhoCSV] ),
 				    Origem = Csv.Document(
 				        Conteudo,
 				        [Delimiter = ",", Columns = 35, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]
 				    ),
 				    Cabecalho = Table.PromoteHeaders( Origem, [PromoteAllScalars = true] ),
-				    Tipos = Table.TransformColumnTypes(
-				        Cabecalho,
-				        {{"id_voo", type text}, {"numero_voo", type text}, {"data_voo", type date}, {"ano", Int64.Type}, {"mes", Int64.Type}, {"mes_nome", type text}, {"ano_mes", type text}, {"dia_semana", type text}, {"origem_cidade", type text}, {"origem_iata", type text}, {"origem_uf", type text}, {"origem_regiao", type text}, {"origem_lat", type number}, {"origem_lon", type number}, {"destino_cidade", type text}, {"destino_iata", type text}, {"destino_uf", type text}, {"destino_regiao", type text}, {"destino_lat", type number}, {"destino_lon", type number}, {"rota", type text}, {"distancia_km", Int64.Type}, {"tipo_aeronave", type text}, {"capacidade_aeronave", Int64.Type}, {"passageiros", Int64.Type}, {"taxa_ocupacao", type number}, {"preco_medio_passagem", type number}, {"receita_voo", type number}, {"custo_voo", type number}, {"lucro_voo", type number}, {"atraso_minutos", type number}, {"situacao_voo", type text}, {"motivo_atraso_cancelamento", type text}, {"duracao_minutos", Int64.Type}, {"satisfacao_passageiros", type number}},
-				        "en-US"
-				    ),
+				    Tipos = Table.TransformColumnTypes( Cabecalho, {{"id_voo", type text}, {"numero_voo", type text}, {"data_voo", type date}, {"ano", Int64.Type}, {"mes", Int64.Type}, {"mes_nome", type text}, {"ano_mes", type text}, {"dia_semana", type text}, {"origem_cidade", type text}, {"origem_iata", type text}, {"origem_uf", type text}, {"origem_regiao", type text}, {"origem_lat", type number}, {"origem_lon", type number}, {"destino_cidade", type text}, {"destino_iata", type text}, {"destino_uf", type text}, {"destino_regiao", type text}, {"destino_lat", type number}, {"destino_lon", type number}, {"rota", type text}, {"distancia_km", Int64.Type}, {"tipo_aeronave", type text}, {"capacidade_aeronave", Int64.Type}, {"passageiros", Int64.Type}, {"taxa_ocupacao", type number}, {"preco_medio_passagem", type number}, {"receita_voo", type number}, {"custo_voo", type number}, {"lucro_voo", type number}, {"atraso_minutos", type number}, {"situacao_voo", type text}, {"motivo_atraso_cancelamento", type text}, {"duracao_minutos", Int64.Type}, {"satisfacao_passageiros", type number}}, "en-US" ),
 				    SemLinhasVazias = Table.SelectRows( Tipos, each [id_voo] <> null and [id_voo] <> "" )
 				in
 				    SemLinhasVazias

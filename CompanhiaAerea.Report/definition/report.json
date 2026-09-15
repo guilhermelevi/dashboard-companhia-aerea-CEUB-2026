@@ -3,7 +3,8 @@
   "themeCollection": {
     "customTheme": {
       "name": "tema-executivo",
-      "type": "RegisteredResources"
+      "type": "RegisteredResources",
+      "reportVersionAtImport": "5.55"
     }
   },
   "layoutOptimization": "None",

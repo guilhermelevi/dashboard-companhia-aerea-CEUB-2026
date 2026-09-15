@@ -11,63 +11,33 @@ CompanhiaAerea.Report/               ← relatório: 5 páginas, 90 objetos
 
 ---
 
-## Passo a passo (Fabric online)
+## Status: já publicado no Fabric
 
-### 1. Publicar o CSV no OneDrive
-Suba `companhia_aerea_voos.csv` no seu **OneDrive corporativo do CEUB**.
-Sugestão: crie a pasta `Documentos/PowerBI/` e coloque o arquivo lá.
+O projeto **já está no ar** no workspace `Companhia Aerea CEUB`, publicado via Fabric REST API.
 
-Copie a **URL raiz** do seu OneDrive — não o link do arquivo. Ela tem este formato:
-
-```
-https://SEUTENANT-my.sharepoint.com/personal/usuario_dominio_com/
-```
-
-> Para descobrir: abra o OneDrive no navegador e olhe a barra de endereços.
-> Pegue tudo até o `/` que vem logo depois de `personal/seu_usuario`.
-
-### 2. Criar o repositório no GitHub
-Crie um repositório (pode ser privado) e envie **a pasta `PowerBI/` inteira** para a raiz dele.
-Pelo terminal, a partir da pasta do exercício:
-
-```bash
-cd PowerBI
-git init
-git add .
-git commit -m "Dashboard executivo da companhia aérea"
-git branch -M main
-git remote add origin https://github.com/SEU_USUARIO/SEU_REPO.git
-git push -u origin main
-```
-
-### 3. Conectar o workspace do Fabric ao Git
-No workspace: **Configurações do workspace → Integração com o Git**
-
-| Campo | Valor |
+| Item | Link |
 |---|---|
-| Provedor | GitHub |
-| Repositório | o que você criou |
-| Branch | `main` |
-| Pasta | deixe vazio (ou o caminho, se não colocou na raiz) |
+| Relatório | https://app.powerbi.com/groups/21e91615-1c27-4a73-ae1a-887ba415aa68/reports/d69a0523-657f-44dd-8775-cfd3c2152603 |
+| Semantic model | https://app.powerbi.com/groups/21e91615-1c27-4a73-ae1a-887ba415aa68/datasets/97697c03-8626-491e-99b9-8aa51a9edb21 |
 
-Clique em **Conectar** e depois em **Atualizar tudo**.
-O Fabric vai criar dois itens: o semantic model `CompanhiaAerea` e o relatório `CompanhiaAerea`.
+**Fonte de dados:** o CSV é lido por HTTP da URL pública deste próprio repositório
+(`dados/companhia_aerea_voos.csv`), com credencial anônima. Não há gateway nem OneDrive envolvidos,
+e a atualização agendada funciona sem configuração adicional.
 
-### 4. Apontar o modelo para o seu OneDrive
-No workspace, no **semantic model** → `...` → **Configurações** → **Parâmetros**:
+Os dois parâmetros do modelo controlam isso:
 
-| Parâmetro | O que preencher |
+| Parâmetro | Valor |
 |---|---|
-| `pUrlOneDrive` | a URL raiz que você copiou no passo 1 |
-| `pNomeArquivo` | `companhia_aerea_voos.csv` |
+| `pUrlBase` | `https://raw.githubusercontent.com` |
+| `pCaminhoCSV` | `guilhermelevi/dashboard-companhia-aerea-CEUB-2026/main/dados/companhia_aerea_voos.csv` |
 
-Ainda nas configurações, em **Credenciais da fonte de dados** → **Editar credenciais**:
-escolha **OAuth2 / Conta organizacional** e entre com sua conta do CEUB.
-Não é necessário gateway.
+> Se o repositório voltar a ser privado, o refresh quebra. Nesse caso troque a fonte para OneDrive
+> ou embuta os dados no modelo.
 
-### 5. Atualizar
-No semantic model → **Atualizar agora**. Leva cerca de 1 minuto.
-Abra o relatório: as 5 páginas já estarão preenchidas.
+### Republicar depois de editar os arquivos
+
+Alterou algum `.tmdl` ou `visual.json`? Basta reenviar a definição pela API — não precisa de Git integration
+(o admin do tenant do CEUB mantém a integração com GitHub desabilitada de qualquer forma).
 
 ---
 
