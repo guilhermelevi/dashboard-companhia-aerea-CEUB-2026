@@ -8,16 +8,20 @@ model Model
 
 queryGroup 'Parametros'
 
+queryGroup Estagio
+
 queryGroup Fato
 
 queryGroup Dimensoes
-
-annotation PBI_QueryOrder = ["pUrlOneDrive","pNomeArquivo","fVoos","dAeroporto"]
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
 ref table fVoos
 ref table dCalendario
 ref table dAeroporto
+ref table dRota
+ref table dAeronave
+ref table dSituacao
+ref table dMotivo
 ref table _Medidas
 ref cultureInfo pt-BR

@@ -1,13 +1,27 @@
 /// Host de onde o arquivo de dados e baixado.
 expression pUrlBase = "https://raw.githubusercontent.com" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
-	lineageTag: dc99c73e-c04a-4cd4-a4bc-1b0a57092a9f
+	lineageTag: 2d73cdde-a521-496c-951a-faebc3370925
 	queryGroup: 'Parametros'
 
 	annotation PBI_ResultType = Text
 
 /// Caminho do CSV dentro do repositorio, a partir da raiz do host.
 expression pCaminhoCSV = "guilhermelevi/dashboard-companhia-aerea-CEUB-2026/main/dados/companhia_aerea_voos.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
-	lineageTag: bd0c647e-b665-4347-9db7-0aa597b7c910
+	lineageTag: 6c5af91c-c09e-4f29-9bd0-6ba4275202cd
 	queryGroup: 'Parametros'
 
 	annotation PBI_ResultType = Text
+
+expression Fonte =
+		let
+		    Conteudo = Web.Contents( pUrlBase, [RelativePath = pCaminhoCSV] ),
+		    Origem = Csv.Document( Conteudo, [Delimiter = ",", Columns = 35, Encoding = 65001, QuoteStyle = QuoteStyle.Csv] ),
+		    Cabecalho = Table.PromoteHeaders( Origem, [PromoteAllScalars = true] ),
+		    Tipos = Table.TransformColumnTypes( Cabecalho, {{"id_voo", type text}, {"numero_voo", type text}, {"data_voo", type date}, {"ano", Int64.Type}, {"mes", Int64.Type}, {"mes_nome", type text}, {"ano_mes", type text}, {"dia_semana", type text}, {"origem_cidade", type text}, {"origem_iata", type text}, {"origem_uf", type text}, {"origem_regiao", type text}, {"origem_lat", type number}, {"origem_lon", type number}, {"destino_cidade", type text}, {"destino_iata", type text}, {"destino_uf", type text}, {"destino_regiao", type text}, {"destino_lat", type number}, {"destino_lon", type number}, {"rota", type text}, {"distancia_km", Int64.Type}, {"tipo_aeronave", type text}, {"capacidade_aeronave", Int64.Type}, {"passageiros", Int64.Type}, {"taxa_ocupacao", type number}, {"preco_medio_passagem", type number}, {"receita_voo", type number}, {"custo_voo", type number}, {"lucro_voo", type number}, {"atraso_minutos", type number}, {"situacao_voo", type text}, {"motivo_atraso_cancelamento", type text}, {"duracao_minutos", Int64.Type}, {"satisfacao_passageiros", type number}}, "en-US" ),
+		    SemVazios = Table.SelectRows( Tipos, each [id_voo] <> null and [id_voo] <> "" )
+		in
+		    SemVazios
+	lineageTag: 3072278d-0be9-44fd-801e-ce533b50a6d6
+	queryGroup: 'Estagio'
+
+	annotation PBI_ResultType = Table

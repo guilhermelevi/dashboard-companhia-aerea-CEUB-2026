@@ -1,7 +1,22 @@
 # Dashboard Executivo — Companhia Aérea
 
 Projeto Power BI (formato **PBIP/PBIR**) pronto para sincronizar no **Microsoft Fabric** via Git.
-Contém o modelo semântico completo (44 medidas DAX) e o relatório com 5 páginas já montadas.
+Star schema com 6 dimensões, 44 medidas DAX e relatório de 5 páginas.
+
+**Modelo:**
+
+```
+            dCalendario (1.096)
+                   |
+ dAeroporto (20) --+-- dRota (370)
+                   |
+       fVoos  ·  6.200 voos  ·  só chaves e métricas
+                   |
+ dAeronave (6) ----+-- dSituacao (3) -- dMotivo (9)
+```
+
+A fato guarda apenas chaves estrangeiras e métricas. Todo atributo descritivo
+(cidade, UF, região, fabricante, porte, natureza da causa) vive nas dimensões.
 
 ```
 CompanhiaAerea.pbix                  ← ENTREGÁVEL: abre em qualquer Power BI Desktop

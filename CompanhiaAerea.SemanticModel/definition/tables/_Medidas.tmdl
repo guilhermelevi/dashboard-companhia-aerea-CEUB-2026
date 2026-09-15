@@ -11,28 +11,28 @@ table _Medidas
 
 	/// Voos que efetivamente decolaram (pontuais e atrasados).
 	measure 'Voos Realizados' =
-			CALCULATE( [Total de Voos], fVoos[situacao_voo] <> "Cancelado" )
+			CALCULATE( [Total de Voos], dSituacao[Situacao] <> "Cancelado" )
 		formatString: #,0
 		lineageTag: 9550578f-1801-4d35-b089-e2edc38bcf56
 		displayFolder: 01 Operação
 
 	/// Voos que partiram dentro da janela de pontualidade.
 	measure 'Voos Pontuais' =
-			CALCULATE( [Total de Voos], fVoos[situacao_voo] = "Pontual" )
+			CALCULATE( [Total de Voos], dSituacao[Situacao] = "Pontual" )
 		formatString: #,0
 		lineageTag: 90fe5e65-2d11-4b68-9ae1-d077adfd514f
 		displayFolder: 01 Operação
 
 	/// Voos realizados com atraso acima da tolerancia.
 	measure 'Voos Atrasados' =
-			CALCULATE( [Total de Voos], fVoos[situacao_voo] = "Atrasado" )
+			CALCULATE( [Total de Voos], dSituacao[Situacao] = "Atrasado" )
 		formatString: #,0
 		lineageTag: fbbc1d14-7fa8-4eaa-abc8-06fa889a4930
 		displayFolder: 01 Operação
 
 	/// Voos programados que nao foram realizados.
 	measure 'Voos Cancelados' =
-			CALCULATE( [Total de Voos], fVoos[situacao_voo] = "Cancelado" )
+			CALCULATE( [Total de Voos], dSituacao[Situacao] = "Cancelado" )
 		formatString: #,0
 		lineageTag: 579878db-6ac2-4a19-bf33-1c6ab7acb6a2
 		displayFolder: 01 Operação
@@ -67,7 +67,7 @@ table _Medidas
 
 	/// Minutos medios de atraso apenas entre os voos classificados como atrasados.
 	measure 'Atraso Médio dos Atrasados (min)' =
-			CALCULATE( AVERAGE( fVoos[atraso_minutos] ), fVoos[situacao_voo] = "Atrasado" )
+			CALCULATE( AVERAGE( fVoos[atraso_minutos] ), dSituacao[Situacao] = "Atrasado" )
 		formatString: #,0.0
 		lineageTag: 108d49d5-cf4a-4194-a95e-78cff83b37e1
 		displayFolder: 01 Operação
@@ -102,7 +102,7 @@ table _Medidas
 
 	/// Total de assentos disponibilizados nos voos realizados.
 	measure 'Assentos Ofertados' =
-			CALCULATE( SUM( fVoos[capacidade_aeronave] ), fVoos[situacao_voo] <> "Cancelado" )
+			CALCULATE( SUM( fVoos[capacidade_aeronave] ), dSituacao[Situacao] <> "Cancelado" )
 		formatString: #,0
 		lineageTag: c0b2f7bf-5246-437b-9f5c-0ef90693b7be
 		displayFolder: 02 Demanda
@@ -200,7 +200,7 @@ table _Medidas
 
 	/// Voos realizados que fecharam com prejuizo.
 	measure 'Voos Deficitários' =
-			CALCULATE( [Total de Voos], fVoos[lucro_voo] < 0, fVoos[situacao_voo] <> "Cancelado" )
+			CALCULATE( [Total de Voos], fVoos[lucro_voo] < 0, dSituacao[Situacao] <> "Cancelado" )
 		formatString: #,0
 		lineageTag: e37626ad-bac4-498e-8155-e43a221aeb5f
 		displayFolder: 03 Financeiro
@@ -297,8 +297,8 @@ table _Medidas
 	/// Posicao da rota no ranking de passageiros transportados.
 	measure 'Ranking de Rotas por Passageiros' =
 			IF(
-			    HASONEVALUE( fVoos[rota] ),
-			    RANKX( ALLSELECTED( fVoos[rota] ), [Total de Passageiros], , DESC, DENSE )
+			    HASONEVALUE( dRota[Rota] ),
+			    RANKX( ALLSELECTED( dRota[Rota] ), [Total de Passageiros], , DESC, DENSE )
 			)
 		formatString: #,0
 		lineageTag: c7bd7bd0-e1d4-4ee7-9e53-c7921039b5fe

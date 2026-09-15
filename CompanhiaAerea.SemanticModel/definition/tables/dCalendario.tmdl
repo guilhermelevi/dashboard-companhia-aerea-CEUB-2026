@@ -1,13 +1,13 @@
-/// Dimensao de datas, gerada a partir do periodo presente na tabela de voos.
+/// Dimensão de datas, derivada do período presente na fato.
 table dCalendario
-	lineageTag: 505fcfd7-03fe-4b52-ac21-436642764056
+	lineageTag: 432a9368-9d28-4fe9-9658-2688d6f9b26a
 	dataCategory: Time
 
-	/// Data do calendario
+	/// Data do calendário
 	column 'Date'
 		dataType: dateTime
 		formatString: Long Date
-		lineageTag: d7b90a8d-bb69-4a5b-9667-3e4277b92a70
+		lineageTag: 4f03b446-0294-4647-819f-f1ccc9ea0d22
 		summarizeBy: none
 		isKey
 		isNameInferred
@@ -19,7 +19,7 @@ table dCalendario
 	column 'Ano'
 		dataType: int64
 		formatString: 0
-		lineageTag: 4bf478be-8b44-46e6-a940-7eff3c6e40ed
+		lineageTag: 6cb08670-ca97-4c47-b60a-c6b78c6a5901
 		summarizeBy: none
 		sourceColumn: [Ano]
 
@@ -28,75 +28,56 @@ table dCalendario
 	/// Trimestre do ano
 	column 'Trimestre'
 		dataType: string
-		lineageTag: d992694c-7b1b-46c2-8d50-8d47dc0f6d4e
+		lineageTag: 78c29c7a-79af-4606-b005-130ab2417c56
 		summarizeBy: none
 		sourceColumn: [Trimestre]
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Ano e trimestre concatenados
-	column 'Ano-Trimestre'
-		dataType: string
-		lineageTag: 42d56763-9afa-4b31-bb93-6c50f393fdcc
-		summarizeBy: none
-		sourceColumn: [Ano-Trimestre]
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Numero do mes, usado para ordenacao
+	/// Número do mês, usado para ordenar
 	column 'Numero do Mes'
 		dataType: int64
 		formatString: 0
-		lineageTag: 1dfe992c-a104-46e6-a73b-231e1d9356b2
+		lineageTag: a466f5cb-9276-4f47-b3b1-e6a3e9132e1f
 		summarizeBy: none
 		sourceColumn: [Numero do Mes]
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Mes abreviado
+	/// Mês abreviado
 	column 'Mes'
 		dataType: string
-		lineageTag: 8a9e323d-3b90-4c76-a392-fd026294ecf9
+		lineageTag: eefe10e0-4373-47e1-8b3e-34c47a1e0c2a
 		summarizeBy: none
 		sortByColumn: 'Numero do Mes'
 		sourceColumn: [Mes]
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Mes por extenso
+	/// Mês por extenso
 	column 'Mes Completo'
 		dataType: string
-		lineageTag: fb71e648-4ff1-4a82-b772-add35079b3b2
+		lineageTag: 68594925-3a40-49ac-be2d-a63225b66e27
 		summarizeBy: none
 		sortByColumn: 'Numero do Mes'
 		sourceColumn: [Mes Completo]
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Competencia AAAA-MM, usada para ordenar a serie temporal
+	/// Competência no formato AAAA-MM
 	column 'Ano-Mes'
 		dataType: string
-		lineageTag: 16ea1dc0-219d-4b3b-9554-aa10e8a85b11
+		lineageTag: 3c51bbd9-a630-4349-8292-693d7be96180
 		summarizeBy: none
 		sourceColumn: [Ano-Mes]
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Rotulo curto da competencia para eixos de grafico
-	column 'Mes/Ano'
-		dataType: string
-		lineageTag: 04abc610-8f2b-4811-9d2b-dccbde06ca77
-		summarizeBy: none
-		sortByColumn: 'Ano-Mes'
-		sourceColumn: [Mes/Ano]
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Numero do dia da semana (segunda = 1)
+	/// Número do dia da semana (segunda = 1)
 	column 'Numero Dia Semana'
 		dataType: int64
 		formatString: 0
-		lineageTag: 53c19ac4-34f7-439e-a54f-770468cc0984
+		lineageTag: 28fa966a-6da6-4d94-ad48-7505066007b2
 		summarizeBy: none
 		sourceColumn: [Numero Dia Semana]
 
@@ -105,35 +86,35 @@ table dCalendario
 	/// Dia da semana por extenso
 	column 'Dia da Semana'
 		dataType: string
-		lineageTag: 9c7c5283-0fba-4760-9b52-dca3c8dde6f1
+		lineageTag: 8c4500a9-f9c5-4ff0-b9b9-50adff6ad764
 		summarizeBy: none
 		sortByColumn: 'Numero Dia Semana'
 		sourceColumn: [Dia da Semana]
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Separa dias uteis de fins de semana
+	/// Separa dias úteis de fins de semana
 	column 'Fim de Semana'
 		dataType: string
-		lineageTag: e956e35b-8c5a-4f0d-a42e-f2477becea22
+		lineageTag: a6aa4465-a206-4b40-b2d1-3467517776dd
 		summarizeBy: none
 		sourceColumn: [Fim de Semana]
 
 		annotation SummarizationSetBy = Automatic
 
 	hierarchy 'Hierarquia de Datas'
-		lineageTag: 0c54974c-a129-4fe8-abd1-2e23403aed6e
+		lineageTag: 9474c941-d040-4c06-bad4-5543cb7ea301
 
 		level Ano
-			lineageTag: 8f043e56-0337-4e63-98d8-874139f9aedc
+			lineageTag: 008d6228-c4f0-40e0-bb0a-42f0473eebbd
 			column: Ano
 
 		level Trimestre
-			lineageTag: 543d46f7-259f-4ef1-beb3-60a949dd21f0
+			lineageTag: a93a2818-34c8-4493-afc1-20ce222f1bd5
 			column: Trimestre
 
 		level Mes
-			lineageTag: de0fdea8-e772-4989-89df-2b8692c422ef
+			lineageTag: 1b7756f2-6c93-42e8-b564-845331e21ce8
 			column: 'Mes Completo'
 
 	partition dCalendario = calculated
@@ -144,17 +125,15 @@ table dCalendario
 				RETURN
 				ADDCOLUMNS(
 				    CALENDAR( DATE( YEAR(_min), 1, 1 ), DATE( YEAR(_max), 12, 31 ) ),
-				    "Ano",            YEAR( [Date] ),
-				    "Trimestre",      "T" & FORMAT( [Date], "Q" ),
-				    "Ano-Trimestre",  YEAR( [Date] ) & "-T" & FORMAT( [Date], "Q" ),
-				    "Numero do Mes",  MONTH( [Date] ),
-				    "Mes",            FORMAT( [Date], "MMM", "pt-BR" ),
-				    "Mes Completo",   FORMAT( [Date], "MMMM", "pt-BR" ),
-				    "Ano-Mes",        FORMAT( [Date], "yyyy-MM" ),
-				    "Mes/Ano",        FORMAT( [Date], "MMM/yy", "pt-BR" ),
+				    "Ano",               YEAR( [Date] ),
+				    "Trimestre",         "T" & FORMAT( [Date], "Q" ),
+				    "Numero do Mes",     MONTH( [Date] ),
+				    "Mes",               FORMAT( [Date], "MMM", "pt-BR" ),
+				    "Mes Completo",      FORMAT( [Date], "MMMM", "pt-BR" ),
+				    "Ano-Mes",           FORMAT( [Date], "yyyy-MM" ),
 				    "Numero Dia Semana", WEEKDAY( [Date], 2 ),
-				    "Dia da Semana",  FORMAT( [Date], "dddd", "pt-BR" ),
-				    "Fim de Semana",  IF( WEEKDAY( [Date], 2 ) > 5, "Fim de semana", "Dia util" )
+				    "Dia da Semana",     FORMAT( [Date], "dddd", "pt-BR" ),
+				    "Fim de Semana",     IF( WEEKDAY( [Date], 2 ) > 5, "Fim de semana", "Dia util" )
 				)
 
 	annotation PBI_Id = dCalendario

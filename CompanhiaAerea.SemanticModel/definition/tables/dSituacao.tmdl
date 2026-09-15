@@ -1,0 +1,50 @@
+/// Dimensão de situação do voo.
+table dSituacao
+	lineageTag: c716c057-143d-4625-85e7-7bea5568ab38
+
+	/// Pontual, Atrasado ou Cancelado
+	column 'Situacao'
+		dataType: string
+		lineageTag: 1cde85e4-54c3-497b-b197-7ea15e0e77ae
+		summarizeBy: none
+		sourceColumn: Situacao
+		isKey
+		sortByColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordem de exibição, do melhor para o pior desfecho
+	column 'Ordem'
+		dataType: int64
+		formatString: 0
+		lineageTag: 94d23371-1a54-450f-a50b-93fdcc45457c
+		summarizeBy: none
+		sourceColumn: Ordem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Indica se o voo chegou a decolar
+	column 'Realizado'
+		dataType: string
+		lineageTag: e38ed516-2c8c-478e-b4cc-6c6a456cdc05
+		summarizeBy: none
+		sourceColumn: Realizado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dSituacao = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"situacao_voo"} ) ),
+				    Renomeado = Table.RenameColumns( Unicos, {{"situacao_voo","Situacao"}} ),
+				    ComOrdem = Table.AddColumn( Renomeado, "Ordem", each
+				        if [Situacao] = "Pontual" then 1 else if [Situacao] = "Atrasado" then 2 else 3, Int64.Type ),
+				    ComRealizado = Table.AddColumn( ComOrdem, "Realizado", each
+				        if [Situacao] = "Cancelado" then "Nao realizado" else "Realizado", type text ),
+				    Ordenado = Table.Sort( ComRealizado, {{"Ordem", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

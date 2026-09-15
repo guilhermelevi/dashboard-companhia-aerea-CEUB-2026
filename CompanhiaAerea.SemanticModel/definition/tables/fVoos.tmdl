@@ -1,393 +1,231 @@
-/// Tabela fato: um registro por voo realizado ou cancelado.
+/// Tabela fato: um registro por voo. Contém apenas chaves e métricas — todo atributo descritivo vive nas dimensões.
 table fVoos
-	lineageTag: 1415eea7-964d-448e-a531-ccc43bc8dd52
+	lineageTag: 784e4d5c-a8fe-4c16-8e17-6cca1060d03f
 
-	/// Identificador unico do voo
-	column id_voo
+	/// Identificador único do voo (chave degenerada)
+	column 'id_voo'
 		dataType: string
-		lineageTag: 1b7b90da-dfac-4b5f-88e8-3ae382b2af08
+		lineageTag: 635d2fbd-0ca0-4e5f-9839-8697da456484
 		summarizeBy: none
 		sourceColumn: id_voo
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Numero comercial do voo
-	column numero_voo
+	/// Número comercial do voo (chave degenerada)
+	column 'numero_voo'
 		dataType: string
-		lineageTag: 50938a21-710a-46cb-9e2f-55fe7e06f4cd
+		lineageTag: fcc1cf9d-2cbf-46c6-9971-11311f03b490
 		summarizeBy: none
 		sourceColumn: numero_voo
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Data de realizacao do voo
-	column data_voo
+	/// Data do voo — chave para dCalendario
+	column 'data_voo'
 		dataType: dateTime
 		formatString: Long Date
-		lineageTag: 4209f6c3-78bf-47c9-b15e-269d43a59ac6
+		lineageTag: 7a8ce7b9-bdbd-40ee-9b46-3eaea6b81db1
 		summarizeBy: none
 		sourceColumn: data_voo
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Ano do voo
-	column ano
-		dataType: int64
-		formatString: 0
-		lineageTag: 65df6724-77c1-4f31-ad39-efb73fa9efeb
-		summarizeBy: none
-		sourceColumn: ano
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Numero do mes (1-12)
-	column mes
-		dataType: int64
-		formatString: 0
-		lineageTag: a6a1f48f-5c01-4015-95c4-9a635446133f
-		summarizeBy: none
-		sourceColumn: mes
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Nome do mes por extenso
-	column mes_nome
+	/// Aeroporto de partida — chave para dAeroporto
+	column 'origem_iata'
 		dataType: string
-		lineageTag: 515b4488-cc4a-4725-8015-ca97e3d0862c
-		summarizeBy: none
-		sourceColumn: mes_nome
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Competencia no formato AAAA-MM
-	column ano_mes
-		dataType: string
-		lineageTag: 896aa2d7-4889-4a62-99b1-a245bb35de2d
-		summarizeBy: none
-		sourceColumn: ano_mes
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Dia da semana do voo
-	column dia_semana
-		dataType: string
-		lineageTag: dcaa44bf-1fbd-4406-954a-1bc12fa3675b
-		summarizeBy: none
-		sourceColumn: dia_semana
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Cidade do aeroporto de origem
-	column origem_cidade
-		dataType: string
-		lineageTag: ea371a89-81af-42a8-b77b-c1eabbe56ef6
-		summarizeBy: none
-		sourceColumn: origem_cidade
-		dataCategory: City
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Codigo IATA do aeroporto de origem
-	column origem_iata
-		dataType: string
-		lineageTag: 6bbc9231-c022-4cc5-9196-de9fae55cb71
+		lineageTag: 94ec74c9-faad-4d51-9c4e-e8004a183c56
 		summarizeBy: none
 		sourceColumn: origem_iata
 
 		annotation SummarizationSetBy = Automatic
 
-	/// UF do aeroporto de origem
-	column origem_uf
+	/// Par origem-destino — chave para dRota
+	column 'rota'
 		dataType: string
-		lineageTag: 55c9d64d-b4fd-4500-865f-6bf42c70d318
-		summarizeBy: none
-		sourceColumn: origem_uf
-		dataCategory: StateOrProvince
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Regiao do aeroporto de origem
-	column origem_regiao
-		dataType: string
-		lineageTag: 7dcdf9b9-c6db-40fc-a305-37ba424541bb
-		summarizeBy: none
-		sourceColumn: origem_regiao
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Latitude do aeroporto de origem
-	column origem_lat
-		dataType: double
-		lineageTag: 7a30ecd0-7ffd-4d6a-8142-bd8467373c1b
-		summarizeBy: none
-		sourceColumn: origem_lat
-		dataCategory: Latitude
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Longitude do aeroporto de origem
-	column origem_lon
-		dataType: double
-		lineageTag: 98083cf4-3c83-44a3-aedd-b6e9b3145f30
-		summarizeBy: none
-		sourceColumn: origem_lon
-		dataCategory: Longitude
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Cidade do aeroporto de destino
-	column destino_cidade
-		dataType: string
-		lineageTag: 451d8569-5810-4b2b-b241-f852d7ff661f
-		summarizeBy: none
-		sourceColumn: destino_cidade
-		dataCategory: City
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Codigo IATA do aeroporto de destino
-	column destino_iata
-		dataType: string
-		lineageTag: e6e088e8-0b01-4b9c-b74a-95c184f47858
-		summarizeBy: none
-		sourceColumn: destino_iata
-
-		annotation SummarizationSetBy = Automatic
-
-	/// UF do aeroporto de destino
-	column destino_uf
-		dataType: string
-		lineageTag: 2b4db909-647b-4324-874b-2a4b39d8150a
-		summarizeBy: none
-		sourceColumn: destino_uf
-		dataCategory: StateOrProvince
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Regiao do aeroporto de destino
-	column destino_regiao
-		dataType: string
-		lineageTag: aee9a69c-961a-4311-881c-da25fdea7774
-		summarizeBy: none
-		sourceColumn: destino_regiao
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Latitude do aeroporto de destino
-	column destino_lat
-		dataType: double
-		lineageTag: af56e862-ca53-49ec-818f-b17170ed0034
-		summarizeBy: none
-		sourceColumn: destino_lat
-		dataCategory: Latitude
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Longitude do aeroporto de destino
-	column destino_lon
-		dataType: double
-		lineageTag: 6d412f12-60a0-4ce9-9abf-b24194cf77bd
-		summarizeBy: none
-		sourceColumn: destino_lon
-		dataCategory: Longitude
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Par origem-destino (ex.: GRU - SDU)
-	column rota
-		dataType: string
-		lineageTag: 81e8767d-8e56-4db3-b722-98fff1cbac0e
+		lineageTag: 12b24af3-e227-49ac-8a35-65f615511370
 		summarizeBy: none
 		sourceColumn: rota
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Distancia da rota em quilometros
-	column distancia_km
-		dataType: int64
-		formatString: #,0
-		lineageTag: 7748cdbf-730a-4dff-8422-e96f378a6188
-		summarizeBy: none
-		sourceColumn: distancia_km
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Modelo da aeronave utilizada
-	column tipo_aeronave
+	/// Modelo da aeronave — chave para dAeronave
+	column 'tipo_aeronave'
 		dataType: string
-		lineageTag: f7eb3a2b-dacb-41f1-bbcd-0b81e43606c6
+		lineageTag: 39e13c08-fa79-4b00-bdde-d93b87598961
 		summarizeBy: none
 		sourceColumn: tipo_aeronave
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Assentos disponiveis na aeronave
-	column capacidade_aeronave
-		dataType: int64
-		formatString: #,0
-		lineageTag: 842ecb93-1be3-4677-8c13-0ddbbe7753bf
-		summarizeBy: none
-		sourceColumn: capacidade_aeronave
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Passageiros transportados no voo
-	column passageiros
-		dataType: int64
-		formatString: #,0
-		lineageTag: 4326f39b-be7d-4242-a01d-5f0a0559d309
-		summarizeBy: none
-		sourceColumn: passageiros
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Passageiros dividido pela capacidade
-	column taxa_ocupacao
-		dataType: double
-		formatString: 0.0%
-		lineageTag: 54219734-eda7-4f89-93f3-42841161d4c3
-		summarizeBy: none
-		sourceColumn: taxa_ocupacao
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Preco medio pago por passageiro
-	column preco_medio_passagem
-		dataType: double
-		formatString: "R$" #,0.00
-		lineageTag: 2857be4c-daaa-4071-b0f6-e535d1e44af4
-		summarizeBy: none
-		sourceColumn: preco_medio_passagem
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Receita bruta gerada pelo voo
-	column receita_voo
-		dataType: double
-		formatString: "R$" #,0.00
-		lineageTag: 38a12745-c0eb-4e84-9a82-9f1ed7b7b5ce
-		summarizeBy: none
-		sourceColumn: receita_voo
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Custo operacional total do voo
-	column custo_voo
-		dataType: double
-		formatString: "R$" #,0.00
-		lineageTag: a1454ba6-e21b-42a5-b1ef-0a9ede5b5ded
-		summarizeBy: none
-		sourceColumn: custo_voo
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Receita menos custo do voo
-	column lucro_voo
-		dataType: double
-		formatString: "R$" #,0.00
-		lineageTag: 1b954a18-f09a-4ead-9b0e-4f29e202c4bb
-		summarizeBy: none
-		sourceColumn: lucro_voo
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Minutos de atraso na decolagem
-	column atraso_minutos
-		dataType: double
-		formatString: #,0
-		lineageTag: 6eec5e14-f1c3-4c52-96e4-f27ef46d45a7
-		summarizeBy: none
-		sourceColumn: atraso_minutos
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Pontual, Atrasado ou Cancelado
-	column situacao_voo
+	/// Situação do voo — chave para dSituacao
+	column 'situacao_voo'
 		dataType: string
-		lineageTag: 4204dcc9-3fee-4acc-ae61-d23de3f954f5
+		lineageTag: ae34ca11-dfd4-4d17-b606-ec74197c7ffa
 		summarizeBy: none
 		sourceColumn: situacao_voo
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Causa registrada do atraso ou cancelamento
-	column motivo_atraso_cancelamento
+	/// Causa registrada — chave para dMotivo
+	column 'motivo_atraso_cancelamento'
 		dataType: string
-		lineageTag: 30390255-7157-40ae-ba5c-688d4c009ed8
+		lineageTag: f143cc7f-1caa-4488-a9db-144cf9ebc6cb
 		summarizeBy: none
 		sourceColumn: motivo_atraso_cancelamento
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Tempo de voo em minutos
-	column duracao_minutos
+	/// Distância percorrida em quilômetros
+	column 'distancia_km'
 		dataType: int64
 		formatString: #,0
-		lineageTag: 50eeb9e0-a621-4dd8-a676-51f9a5e20dac
+		lineageTag: 34be620f-2378-45ae-8e9c-bacc3ed5e40b
+		summarizeBy: sum
+		sourceColumn: distancia_km
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Assentos disponíveis no voo
+	column 'capacidade_aeronave'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 27181b3a-14b2-409f-a80b-cbd633da7ab2
+		summarizeBy: sum
+		sourceColumn: capacidade_aeronave
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Passageiros transportados
+	column 'passageiros'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 9668eced-27f6-4f5e-ac71-fa17db9b3949
+		summarizeBy: sum
+		sourceColumn: passageiros
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Passageiros dividido pela capacidade
+	column 'taxa_ocupacao'
+		dataType: double
+		formatString: 0.0%
+		lineageTag: eabfa131-d2d6-4238-9a33-1bd7870bbd70
+		summarizeBy: none
+		sourceColumn: taxa_ocupacao
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Preço médio pago por passageiro
+	column 'preco_medio_passagem'
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: 4b3f4045-21ec-43d5-879c-655c02525601
+		summarizeBy: none
+		sourceColumn: preco_medio_passagem
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Receita bruta do voo
+	column 'receita_voo'
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: ab5dbf6b-aac2-41dc-992f-2981b61f6b57
+		summarizeBy: sum
+		sourceColumn: receita_voo
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Custo operacional do voo
+	column 'custo_voo'
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: d45276a4-977f-4275-af6c-dfcc59a956d8
+		summarizeBy: sum
+		sourceColumn: custo_voo
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Receita menos custo
+	column 'lucro_voo'
+		dataType: double
+		formatString: "R$" #,0.00
+		lineageTag: 220e0230-7879-4c60-9ed3-de802cf3ef13
+		summarizeBy: sum
+		sourceColumn: lucro_voo
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Minutos de atraso na partida
+	column 'atraso_minutos'
+		dataType: double
+		formatString: #,0
+		lineageTag: 4650b870-3d45-427d-b9a3-95c356036e10
+		summarizeBy: none
+		sourceColumn: atraso_minutos
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Tempo de voo em minutos
+	column 'duracao_minutos'
+		dataType: int64
+		formatString: #,0
+		lineageTag: d06c2fd3-5b29-43cf-9286-2078b39cec4e
 		summarizeBy: none
 		sourceColumn: duracao_minutos
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Nota media de satisfacao (1 a 5)
-	column satisfacao_passageiros
+	/// Nota média de satisfação, de 1 a 5
+	column 'satisfacao_passageiros'
 		dataType: double
 		formatString: 0.0
-		lineageTag: c351ca5f-c642-427a-ab36-d0554de51cc4
+		lineageTag: 9ab0f9a5-2a68-4441-bbe8-22fb5c576dd6
 		summarizeBy: none
 		sourceColumn: satisfacao_passageiros
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Faixa de atraso agrupada em intervalos, usada no histograma de atrasos.
+	/// Agrupa o atraso da linha em intervalos, para o histograma
 	column 'Faixa de Atraso' =
 			VAR a = fVoos[atraso_minutos]
 			RETURN
-			    SWITCH(
-			        TRUE(),
-			        ISBLANK( a ),                 "Cancelado",
-			        a <= 15,                      "0-15 min (pontual)",
-			        a <= 30,                      "16-30 min",
-			        a <= 60,                      "31-60 min",
-			        a <= 120,                     "61-120 min",
+			    SWITCH( TRUE(),
+			        ISBLANK( a ), "Cancelado",
+			        a <= 15,      "0-15 min (pontual)",
+			        a <= 30,      "16-30 min",
+			        a <= 60,      "31-60 min",
+			        a <= 120,     "61-120 min",
 			        "Acima de 120 min"
 			    )
 		dataType: string
-		lineageTag: 70d1894d-a533-4d2d-a93a-a041105fbbd0
+		lineageTag: 83dd700e-8a61-4365-b497-726994805296
 		summarizeBy: none
 		sortByColumn: 'Ordem Faixa Atraso'
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Coluna auxiliar que ordena as faixas de atraso no eixo do grafico.
+	/// Ordenação das faixas de atraso
 	column 'Ordem Faixa Atraso' =
 			VAR a = fVoos[atraso_minutos]
-			RETURN
-			    SWITCH( TRUE(),
-			        ISBLANK( a ), 0,
-			        a <= 15,  1,
-			        a <= 30,  2,
-			        a <= 60,  3,
-			        a <= 120, 4,
-			        5
-			    )
+			RETURN SWITCH( TRUE(), ISBLANK(a), 0, a <= 15, 1, a <= 30, 2, a <= 60, 3, a <= 120, 4, 5 )
 		dataType: int64
 		formatString: 0
-		lineageTag: 7e80b620-f58f-4c37-a0ca-d332cc3962b7
+		lineageTag: 2a2f9ebc-3b76-4249-8605-e9432c782b2b
 		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Classifica o voo entre lucrativo e deficitario para analise de rentabilidade.
+	/// Classifica o voo entre lucrativo e deficitário
 	column 'Resultado do Voo' =
-			IF( fVoos[situacao_voo] = "Cancelado", "Cancelado", IF( fVoos[lucro_voo] >= 0, "Lucrativo", "Deficitario" ) )
+			IF( fVoos[situacao_voo] = "Cancelado", "Cancelado",
+			    IF( fVoos[lucro_voo] >= 0, "Lucrativo", "Deficitario" ) )
 		dataType: string
-		lineageTag: f5adff09-f97c-4b66-b483-85502708a830
+		lineageTag: 2fe27841-04c0-4c1e-8f39-342ef6eec103
 		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
 
-	/// Agrupa a taxa de ocupacao em faixas para analise de rentabilidade por lotacao.
+	/// Agrupa a taxa de ocupação da linha em faixas
 	column 'Faixa de Ocupacao' =
 			VAR o = fVoos[taxa_ocupacao]
 			RETURN
@@ -399,86 +237,7 @@ table fVoos
 			        "Acima de 90%"
 			    )
 		dataType: string
-		lineageTag: 04f29b92-f5a0-422a-bce4-864241b3becb
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Mantem o nome das 15 rotas com mais passageiros e agrupa as demais, para deixar o ranking legivel.
-	column 'Rota Top 15' =
-			VAR _pos =
-			    RANKX(
-			        ALL( fVoos[rota] ),
-			        CALCULATE( SUM( fVoos[passageiros] ), ALLEXCEPT( fVoos, fVoos[rota] ) ),
-			        ,
-			        DESC,
-			        DENSE
-			    )
-			RETURN
-			    IF( _pos <= 15, fVoos[rota], "Demais rotas" )
-		dataType: string
-		lineageTag: ec06a09a-41b6-4afd-957c-2eb9eeaa7544
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Rotulo do aeroporto de origem no formato Cidade (IATA).
-	column 'Aeroporto de Origem' =
-			fVoos[origem_cidade] & " (" & fVoos[origem_iata] & ")"
-		dataType: string
-		lineageTag: 34d0df32-4b46-42ab-8bde-32474f0cc4df
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Agrupa as rotas por extensao, usada na analise de preco por distancia.
-	column 'Faixa de Distancia' =
-			VAR d = fVoos[distancia_km]
-			RETURN
-			    SWITCH( TRUE(),
-			        d < 500,  "Curta (ate 500 km)",
-			        d < 1500, "Media (500 a 1.500 km)",
-			        d < 2500, "Longa (1.500 a 2.500 km)",
-			        "Muito longa (acima de 2.500 km)"
-			    )
-		dataType: string
-		lineageTag: 37d67c05-aae0-4a3c-a9f2-72b1f0d9ed85
-		summarizeBy: none
-		sortByColumn: 'Ordem Faixa Distancia'
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Coluna auxiliar de ordenacao das faixas de distancia.
-	column 'Ordem Faixa Distancia' =
-			SWITCH( TRUE(), fVoos[distancia_km] < 500, 1, fVoos[distancia_km] < 1500, 2, fVoos[distancia_km] < 2500, 3, 4 )
-		dataType: int64
-		formatString: 0
-		lineageTag: d24acce3-b565-4744-bfaa-aa39d2c0b43b
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	/// Mantem o nome das 15 rotas com maior atraso medio (entre as que tem ao menos 10 voos) e agrupa as demais.
-	column 'Rota Top Atraso' =
-			VAR _voosRota =
-			    CALCULATE( COUNTROWS( fVoos ), ALLEXCEPT( fVoos, fVoos[rota] ) )
-			VAR _relevantes =
-			    FILTER(
-			        ALL( fVoos[rota] ),
-			        CALCULATE( COUNTROWS( fVoos ), ALLEXCEPT( fVoos, fVoos[rota] ) ) >= 10
-			    )
-			VAR _pos =
-			    RANKX(
-			        _relevantes,
-			        CALCULATE( AVERAGE( fVoos[atraso_minutos] ), ALLEXCEPT( fVoos, fVoos[rota] ) ),
-			        ,
-			        DESC,
-			        DENSE
-			    )
-			RETURN
-			    IF( _voosRota >= 10 && _pos <= 15, fVoos[rota], "Demais rotas" )
-		dataType: string
-		lineageTag: 5b042dbf-a96b-46e0-9773-73b2213a1ab7
+		lineageTag: 4a12dff3-e7fd-4819-8d4f-0c2bfbbced3d
 		summarizeBy: none
 
 		annotation SummarizationSetBy = Automatic
@@ -488,17 +247,12 @@ table fVoos
 		queryGroup: Fato
 		source =
 				let
-				    // O CSV e lido por HTTP a partir do repositorio publico do projeto.
-				    // RelativePath mantem a fonte estatica, o que permite atualizacao agendada sem gateway.
-				    Conteudo = Web.Contents( pUrlBase, [RelativePath = pCaminhoCSV] ),
-				    Origem = Csv.Document(
-				        Conteudo,
-				        [Delimiter = ",", Columns = 35, Encoding = 65001, QuoteStyle = QuoteStyle.Csv]
-				    ),
-				    Cabecalho = Table.PromoteHeaders( Origem, [PromoteAllScalars = true] ),
-				    Tipos = Table.TransformColumnTypes( Cabecalho, {{"id_voo", type text}, {"numero_voo", type text}, {"data_voo", type date}, {"ano", Int64.Type}, {"mes", Int64.Type}, {"mes_nome", type text}, {"ano_mes", type text}, {"dia_semana", type text}, {"origem_cidade", type text}, {"origem_iata", type text}, {"origem_uf", type text}, {"origem_regiao", type text}, {"origem_lat", type number}, {"origem_lon", type number}, {"destino_cidade", type text}, {"destino_iata", type text}, {"destino_uf", type text}, {"destino_regiao", type text}, {"destino_lat", type number}, {"destino_lon", type number}, {"rota", type text}, {"distancia_km", Int64.Type}, {"tipo_aeronave", type text}, {"capacidade_aeronave", Int64.Type}, {"passageiros", Int64.Type}, {"taxa_ocupacao", type number}, {"preco_medio_passagem", type number}, {"receita_voo", type number}, {"custo_voo", type number}, {"lucro_voo", type number}, {"atraso_minutos", type number}, {"situacao_voo", type text}, {"motivo_atraso_cancelamento", type text}, {"duracao_minutos", Int64.Type}, {"satisfacao_passageiros", type number}}, "en-US" ),
-				    SemLinhasVazias = Table.SelectRows( Tipos, each [id_voo] <> null and [id_voo] <> "" )
+				    Colunas = Table.SelectColumns( Fonte, {
+				        "id_voo", "numero_voo", "data_voo", "origem_iata", "rota", "tipo_aeronave",
+				        "situacao_voo", "motivo_atraso_cancelamento", "distancia_km", "capacidade_aeronave",
+				        "passageiros", "taxa_ocupacao", "preco_medio_passagem", "receita_voo", "custo_voo",
+				        "lucro_voo", "atraso_minutos", "duracao_minutos", "satisfacao_passageiros" } )
 				in
-				    SemLinhasVazias
+				    Colunas
 
 	annotation PBI_ResultType = Table

@@ -5,3 +5,19 @@ relationship rel_calendario_voos
 relationship rel_aeroporto_voos
 	fromColumn: fVoos.origem_iata
 	toColumn: dAeroporto.IATA
+
+relationship rel_rota_voos
+	fromColumn: fVoos.rota
+	toColumn: dRota.Rota
+
+relationship rel_aeronave_voos
+	fromColumn: fVoos.tipo_aeronave
+	toColumn: dAeronave.Tipo
+
+relationship rel_situacao_voos
+	fromColumn: fVoos.situacao_voo
+	toColumn: dSituacao.Situacao
+
+relationship rel_motivo_voos
+	fromColumn: fVoos.motivo_atraso_cancelamento
+	toColumn: dMotivo.Motivo

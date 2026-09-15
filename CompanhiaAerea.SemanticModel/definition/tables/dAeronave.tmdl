@@ -1,0 +1,79 @@
+/// Dimensão de aeronaves: modelo, fabricante, capacidade e porte.
+table dAeronave
+	lineageTag: f082011d-d6d0-481b-aed3-51742188f384
+
+	/// Modelo da aeronave
+	column 'Tipo'
+		dataType: string
+		lineageTag: f38c3750-6b14-4ab4-90b1-3eff32ef0c7a
+		summarizeBy: none
+		sourceColumn: Tipo
+		isKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Fabricante do modelo
+	column 'Fabricante'
+		dataType: string
+		lineageTag: fa215e81-4a4c-4838-8102-81c7a02ef698
+		summarizeBy: none
+		sourceColumn: Fabricante
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Assentos do modelo
+	column 'Capacidade'
+		dataType: int64
+		formatString: #,0
+		lineageTag: 9b413fe2-d62c-47e2-9f54-bd853c7f705e
+		summarizeBy: none
+		sourceColumn: Capacidade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Classificação por capacidade
+	column 'Porte'
+		dataType: string
+		lineageTag: b2f7f4bf-6313-4219-bb7b-1feaddc36583
+		summarizeBy: none
+		sourceColumn: Porte
+		sortByColumn: 'Ordem Porte'
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordenação do porte
+	column 'Ordem Porte'
+		dataType: int64
+		formatString: 0
+		lineageTag: de05043c-85e7-4ffa-837f-57b15f83f95f
+		summarizeBy: none
+		sourceColumn: Ordem Porte
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dAeronave = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Cols = Table.Distinct( Table.SelectColumns( Fonte, {"tipo_aeronave","capacidade_aeronave"} ), {"tipo_aeronave"} ),
+				    Renomeado = Table.RenameColumns( Cols, {{"tipo_aeronave","Tipo"},{"capacidade_aeronave","Capacidade"}} ),
+				    ComFabricante = Table.AddColumn( Renomeado, "Fabricante", each
+				        if Text.StartsWith( [Tipo], "Airbus" ) then "Airbus"
+				        else if Text.StartsWith( [Tipo], "Boeing" ) then "Boeing"
+				        else if Text.StartsWith( [Tipo], "Embraer" ) then "Embraer"
+				        else if Text.StartsWith( [Tipo], "ATR" ) then "ATR"
+				        else "Outro", type text ),
+				    ComPorte = Table.AddColumn( ComFabricante, "Porte", each
+				        if [Capacidade] < 100 then "Regional"
+				        else if [Capacidade] < 180 then "Narrow-body medio"
+				        else if [Capacidade] < 250 then "Narrow-body grande"
+				        else "Wide-body", type text ),
+				    ComOrdem = Table.AddColumn( ComPorte, "Ordem Porte", each
+				        if [Capacidade] < 100 then 1 else if [Capacidade] < 180 then 2
+				        else if [Capacidade] < 250 then 3 else 4, Int64.Type ),
+				    Ordenado = Table.Sort( ComOrdem, {{"Capacidade", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

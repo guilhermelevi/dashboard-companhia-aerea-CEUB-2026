@@ -1,0 +1,65 @@
+/// Dimensão de causas, classificadas por natureza e controlabilidade.
+table dMotivo
+	lineageTag: 903dacc8-d4c5-433a-843d-c263d7a76e07
+
+	/// Causa registrada do atraso ou cancelamento
+	column 'Motivo'
+		dataType: string
+		lineageTag: 5c32822f-7d1a-4bea-9081-f8e80db760c2
+		summarizeBy: none
+		sourceColumn: Motivo
+		isKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Agrupa as causas por natureza: externa, interna ou comercial
+	column 'Categoria'
+		dataType: string
+		lineageTag: 5da3c1f4-b5d9-4389-a7c2-13c07ecaf191
+		summarizeBy: none
+		sourceColumn: Categoria
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Se a companhia tem ação direta sobre a causa
+	column 'Controlavel'
+		dataType: string
+		lineageTag: 7588c3c6-748a-4570-975e-4a74542b1fc9
+		summarizeBy: none
+		sourceColumn: Controlavel
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Separa os voos sem intercorrência dos demais
+	column 'Tem Ocorrencia'
+		dataType: string
+		lineageTag: 52f0c21c-3563-4ebc-b6a5-d5bad7fb8a6b
+		summarizeBy: none
+		sourceColumn: Tem Ocorrencia
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dMotivo = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Unicos = Table.Distinct( Table.SelectColumns( Fonte, {"motivo_atraso_cancelamento"} ) ),
+				    Renomeado = Table.RenameColumns( Unicos, {{"motivo_atraso_cancelamento","Motivo"}} ),
+				    ComCategoria = Table.AddColumn( Renomeado, "Categoria", each
+				        if [Motivo] = "Sem intercorrência" then "Sem ocorrencia"
+				        else if List.Contains( {"Condições meteorológicas","Restrição de tráfego aéreo",
+				                                "Congestionamento do aeroporto"}, [Motivo] ) then "Externa"
+				        else if [Motivo] = "Baixa demanda comercial" then "Comercial"
+				        else "Operacional interna", type text ),
+				    ComControle = Table.AddColumn( ComCategoria, "Controlavel", each
+				        if [Categoria] = "Operacional interna" or [Categoria] = "Comercial" then "Sob controle da companhia"
+				        else if [Categoria] = "Externa" then "Fator externo"
+				        else "Nao se aplica", type text ),
+				    ComFlag = Table.AddColumn( ComControle, "Tem Ocorrencia", each
+				        if [Motivo] = "Sem intercorrência" then "Sem ocorrencia" else "Com ocorrencia", type text ),
+				    Ordenado = Table.Sort( ComFlag, {{"Motivo", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

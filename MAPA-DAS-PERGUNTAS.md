@@ -49,3 +49,28 @@ A paleta é funcional, não decorativa:
 
 Nenhuma série recebe cor só para diferenciar visualmente: quando a categoria não carrega julgamento
 (região, aeronave, competência), a cor é um azul neutro único.
+
+
+## Modelagem dimensional
+
+Star schema: uma fato cercada por seis dimensões, todas filtrando no sentido único (1 → *).
+
+| Tabela | Linhas | Papel |
+|---|---|---|
+| `fVoos` | 6.200 | fato — chaves estrangeiras e métricas apenas |
+| `dCalendario` | 1.096 | datas, marcada como tabela de datas |
+| `dRota` | 370 | origem, destino, extensão, faixa de distância |
+| `dAeroporto` | 20 | cidade, UF, região, coordenadas |
+| `dMotivo` | 9 | causa, natureza (externa/interna/comercial), controlabilidade |
+| `dAeronave` | 6 | modelo, fabricante, capacidade, porte |
+| `dSituacao` | 3 | pontual, atrasado, cancelado — com ordem de exibição |
+
+As únicas colunas descritivas que permanecem na fato são as **faixas derivadas da
+própria linha** (faixa de atraso, faixa de ocupação, resultado do voo). Elas dependem
+do valor medido naquele voo, não de um atributo compartilhado, então pertencem à fato.
+
+A dimensão `dAeroporto` cobre origem **e** destino: a query une os dois conjuntos antes
+de aplicar `Table.Distinct`, para que a dimensão descreva a malha inteira.
+
+Todas as tabelas derivam de uma **consulta de estágio** (`Fonte`), que lê e tipa o CSV
+uma única vez — o arquivo não é baixado sete vezes no refresh.

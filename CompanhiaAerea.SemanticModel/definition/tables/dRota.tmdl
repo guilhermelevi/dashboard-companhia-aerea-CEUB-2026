@@ -1,0 +1,127 @@
+/// Dimensão de rotas: origem, destino e extensão de cada par atendido.
+table dRota
+	lineageTag: d135d240-883f-4e0a-90a6-e7a08cedc527
+
+	/// Par origem-destino, ex.: GRU - SDU
+	column 'Rota'
+		dataType: string
+		lineageTag: 9f2cf6b6-0ff0-4618-be5c-7ce40b110f36
+		summarizeBy: none
+		sourceColumn: Rota
+		isKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Cidade de partida
+	column 'Origem'
+		dataType: string
+		lineageTag: 5b1c5f4e-9579-4b8a-92a6-0ca68d572ad6
+		summarizeBy: none
+		sourceColumn: Origem
+		dataCategory: City
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Cidade de chegada
+	column 'Destino'
+		dataType: string
+		lineageTag: d228c4b7-12ac-4fd4-9c0f-944809005aee
+		summarizeBy: none
+		sourceColumn: Destino
+		dataCategory: City
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Código do aeroporto de partida
+	column 'Origem IATA'
+		dataType: string
+		lineageTag: edf389f0-2859-4a3b-b244-e1b7ed8b950f
+		summarizeBy: none
+		sourceColumn: origem_iata
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Código do aeroporto de chegada
+	column 'Destino IATA'
+		dataType: string
+		lineageTag: ea6c2a9e-445a-42a1-adcf-ae96958fad4d
+		summarizeBy: none
+		sourceColumn: destino_iata
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Extensão da rota em quilômetros
+	column 'Distancia'
+		dataType: int64
+		formatString: #,0
+		lineageTag: bab66269-ef05-4699-8ba2-2f3accef0777
+		summarizeBy: none
+		sourceColumn: distancia_km
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Agrupa as rotas por extensão
+	column 'Faixa de Distancia' =
+			VAR d = dRota[Distancia]
+			RETURN
+			    SWITCH( TRUE(),
+			        d < 500,  "Curta (ate 500 km)",
+			        d < 1500, "Media (500 a 1.500 km)",
+			        d < 2500, "Longa (1.500 a 2.500 km)",
+			        "Muito longa (acima de 2.500 km)"
+			    )
+		dataType: string
+		lineageTag: ef7153b8-cbd4-45a2-939e-c12dfd0ced20
+		summarizeBy: none
+		sortByColumn: 'Ordem Faixa Distancia'
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Ordenação das faixas de distância
+	column 'Ordem Faixa Distancia' =
+			SWITCH( TRUE(), dRota[Distancia] < 500, 1, dRota[Distancia] < 1500, 2, dRota[Distancia] < 2500, 3, 4 )
+		dataType: int64
+		formatString: 0
+		lineageTag: ca24a267-b696-4096-8661-0e6be4aed7e4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// As 15 rotas com mais passageiros; as demais agrupadas
+	column 'Rota Top 15' =
+			VAR _pos =
+			    RANKX( ALL( dRota ), CALCULATE( SUM( fVoos[passageiros] ) ), , DESC, DENSE )
+			RETURN
+			    IF( _pos <= 15, dRota[Rota], "Demais rotas" )
+		dataType: string
+		lineageTag: f8c8670a-032d-42d5-8781-c0a53c272c32
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	/// As 15 rotas com maior atraso médio, entre as que têm ao menos 10 voos
+	column 'Rota Top Atraso' =
+			VAR _voos = CALCULATE( COUNTROWS( fVoos ) )
+			VAR _relevantes = FILTER( ALL( dRota ), CALCULATE( COUNTROWS( fVoos ) ) >= 10 )
+			VAR _pos = RANKX( _relevantes, CALCULATE( AVERAGE( fVoos[atraso_minutos] ) ), , DESC, DENSE )
+			RETURN
+			    IF( _voos >= 10 && _pos <= 15, dRota[Rota], "Demais rotas" )
+		dataType: string
+		lineageTag: d9559f36-d444-4a17-802e-9b1724d94753
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dRota = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Cols = Table.SelectColumns( Fonte, {"rota","origem_cidade","destino_cidade","origem_iata","destino_iata","distancia_km"} ),
+				    Renomeado = Table.RenameColumns( Cols, {{"rota","Rota"},{"origem_cidade","Origem"},{"destino_cidade","Destino"}} ),
+				    Unicos = Table.Distinct( Renomeado, {"Rota"} ),
+				    Ordenado = Table.Sort( Unicos, {{"Rota", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table
