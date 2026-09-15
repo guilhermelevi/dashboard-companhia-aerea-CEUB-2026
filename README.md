@@ -4,10 +4,16 @@ Projeto Power BI (formato **PBIP/PBIR**) pronto para sincronizar no **Microsoft 
 Contém o modelo semântico completo (44 medidas DAX) e o relatório com 5 páginas já montadas.
 
 ```
-CompanhiaAerea.pbip                  ← abre no Power BI Desktop (se você tiver acesso a um)
+CompanhiaAerea.pbix                  ← ENTREGÁVEL: abre em qualquer Power BI Desktop
+CompanhiaAerea.pbip                  ← o mesmo projeto em formato de pastas (versionável)
 CompanhiaAerea.SemanticModel/        ← modelo: tabelas, relações, 44 medidas DAX
-CompanhiaAerea.Report/               ← relatório: 5 páginas, 90 objetos
+CompanhiaAerea.Report/               ← relatório: 5 páginas, 62 objetos
+dados/companhia_aerea_voos.csv       ← fonte lida pelo modelo via HTTP
+ROTEIRO-GERAR-PAINEL.md              ← como reproduzir este processo em outro exercício
 ```
+
+> O `.pbix` foi exportado do Service com `GET /v1.0/myorg/groups/{ws}/reports/{id}/Export`
+> e contém o DataModel embutido — abre sem depender do Fabric.
 
 ---
 
