@@ -1,0 +1,15 @@
+/// URL raiz do seu OneDrive corporativo ou do site SharePoint onde o CSV foi publicado.
+/// Exemplo OneDrive: https://SEUTENANT-my.sharepoint.com/personal/usuario_dominio_com/
+/// Exemplo SharePoint: https://SEUTENANT.sharepoint.com/sites/NomeDoSite/
+expression pUrlOneDrive = "https://ALTERE-AQUI-my.sharepoint.com/personal/usuario_dominio_com/" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: {tag()}
+	queryGroup: 'Parametros'
+
+	annotation PBI_ResultType = Text
+
+/// Nome exato do arquivo CSV publicado no OneDrive/SharePoint, com a extensao.
+expression pNomeArquivo = "companhia_aerea_voos.csv" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: {tag()}
+	queryGroup: 'Parametros'
+
+	annotation PBI_ResultType = Text

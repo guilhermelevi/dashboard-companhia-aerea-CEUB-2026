@@ -1,0 +1,93 @@
+/// Dimensao de aeroportos, derivada dos pares origem/destino da tabela de voos.
+table dAeroporto
+	lineageTag: 66b5d1a9-86b3-412d-9994-b40dfcd5e0a8
+
+	/// Codigo IATA de tres letras do aeroporto
+	column IATA
+		dataType: string
+		isKey
+		lineageTag: e75fb277-1dd1-4642-8f0d-6f7ab8ee41d5
+		summarizeBy: none
+		sourceColumn: IATA
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Cidade atendida pelo aeroporto
+	column Cidade
+		dataType: string
+		lineageTag: 933b206e-0285-4917-99cd-6249ad994b5d
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: Cidade
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Unidade federativa do aeroporto
+	column UF
+		dataType: string
+		lineageTag: 54998742-4b5b-4229-a64e-87c3bde421b5
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: UF
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Regiao do pais onde fica o aeroporto
+	column Regiao
+		dataType: string
+		lineageTag: c975a131-ece9-49b9-8e6b-932284094456
+		summarizeBy: none
+		sourceColumn: Regiao
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Rotulo exibido no mapa e nos eixos (cidade e codigo IATA)
+	column Aeroporto
+		dataType: string
+		lineageTag: 5684ce9e-0e17-4dcf-85db-52ec294a97af
+		summarizeBy: none
+		sourceColumn: Aeroporto
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Latitude do aeroporto
+	column Latitude
+		dataType: double
+		lineageTag: eae2a489-3537-49a6-800f-9ef1c33dad4b
+		dataCategory: Latitude
+		summarizeBy: none
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Longitude do aeroporto
+	column Longitude
+		dataType: double
+		lineageTag: 8162d3cc-71c8-4523-a2c6-d27f8717490e
+		dataCategory: Longitude
+		summarizeBy: none
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dAeroporto = m
+		mode: import
+		queryGroup: Dimensoes
+		source =
+				let
+				    Origens = Table.SelectColumns( fVoos, {"origem_iata", "origem_cidade", "origem_uf", "origem_regiao", "origem_lat", "origem_lon"} ),
+				    OrigensRenomeadas = Table.RenameColumns( Origens, {
+				        {"origem_iata", "IATA"}, {"origem_cidade", "Cidade"}, {"origem_uf", "UF"},
+				        {"origem_regiao", "Regiao"}, {"origem_lat", "Latitude"}, {"origem_lon", "Longitude"} } ),
+				    Destinos = Table.SelectColumns( fVoos, {"destino_iata", "destino_cidade", "destino_uf", "destino_regiao", "destino_lat", "destino_lon"} ),
+				    DestinosRenomeados = Table.RenameColumns( Destinos, {
+				        {"destino_iata", "IATA"}, {"destino_cidade", "Cidade"}, {"destino_uf", "UF"},
+				        {"destino_regiao", "Regiao"}, {"destino_lat", "Latitude"}, {"destino_lon", "Longitude"} } ),
+				    Unificado = Table.Combine( {OrigensRenomeadas, DestinosRenomeados} ),
+				    Distintos = Table.Distinct( Unificado, {"IATA"} ),
+				    ComRotulo = Table.AddColumn( Distintos, "Aeroporto", each [Cidade] & " (" & [IATA] & ")", type text ),
+				    Ordenado = Table.Sort( ComRotulo, {{"Aeroporto", Order.Ascending}} )
+				in
+				    Ordenado
+
+	annotation PBI_ResultType = Table

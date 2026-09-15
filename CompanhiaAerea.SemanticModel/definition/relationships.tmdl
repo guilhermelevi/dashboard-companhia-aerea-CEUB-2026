@@ -1,0 +1,7 @@
+relationship rel_calendario_voos
+	fromColumn: fVoos.data_voo
+	toColumn: dCalendario.Date
+
+relationship rel_aeroporto_voos
+	fromColumn: fVoos.origem_iata
+	toColumn: dAeroporto.IATA

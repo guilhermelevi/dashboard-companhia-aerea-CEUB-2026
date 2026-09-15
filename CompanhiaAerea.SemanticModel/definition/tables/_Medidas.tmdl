@@ -1,0 +1,355 @@
+/// Tabela dedicada as medidas do modelo. Nao contem dados.
+table _Medidas
+	lineageTag: dfe77751-7732-4bd4-b49b-92c5692555de
+
+	/// Quantidade total de voos programados, incluindo os cancelados.
+	measure 'Total de Voos' =
+			COUNTROWS( fVoos )
+		formatString: #,0
+		lineageTag: 957344ce-8a12-4c8c-b43a-5be3ceda50e2
+		displayFolder: 01 Operação
+
+	/// Voos que efetivamente decolaram (pontuais e atrasados).
+	measure 'Voos Realizados' =
+			CALCULATE( [Total de Voos], fVoos[situacao_voo] <> "Cancelado" )
+		formatString: #,0
+		lineageTag: 9550578f-1801-4d35-b089-e2edc38bcf56
+		displayFolder: 01 Operação
+
+	/// Voos que partiram dentro da janela de pontualidade.
+	measure 'Voos Pontuais' =
+			CALCULATE( [Total de Voos], fVoos[situacao_voo] = "Pontual" )
+		formatString: #,0
+		lineageTag: 90fe5e65-2d11-4b68-9ae1-d077adfd514f
+		displayFolder: 01 Operação
+
+	/// Voos realizados com atraso acima da tolerancia.
+	measure 'Voos Atrasados' =
+			CALCULATE( [Total de Voos], fVoos[situacao_voo] = "Atrasado" )
+		formatString: #,0
+		lineageTag: fbbc1d14-7fa8-4eaa-abc8-06fa889a4930
+		displayFolder: 01 Operação
+
+	/// Voos programados que nao foram realizados.
+	measure 'Voos Cancelados' =
+			CALCULATE( [Total de Voos], fVoos[situacao_voo] = "Cancelado" )
+		formatString: #,0
+		lineageTag: 579878db-6ac2-4a19-bf33-1c6ab7acb6a2
+		displayFolder: 01 Operação
+
+	/// Participacao dos voos pontuais sobre os voos realizados.
+	measure '% Pontualidade' =
+			DIVIDE( [Voos Pontuais], [Voos Realizados] )
+		formatString: 0.0%
+		lineageTag: c447d68c-aae7-407b-974e-1a1a3b2e2638
+		displayFolder: 01 Operação
+
+	/// Participacao dos voos atrasados sobre os voos realizados.
+	measure '% Atraso' =
+			DIVIDE( [Voos Atrasados], [Voos Realizados] )
+		formatString: 0.0%
+		lineageTag: 3f47bdcf-b121-4204-b07e-448235963d71
+		displayFolder: 01 Operação
+
+	/// Participacao dos voos cancelados sobre o total programado.
+	measure '% Cancelamento' =
+			DIVIDE( [Voos Cancelados], [Total de Voos] )
+		formatString: 0.0%
+		lineageTag: 0ad9ec20-0851-4c33-87c9-47e981adaaed
+		displayFolder: 01 Operação
+
+	/// Minutos medios de atraso considerando todos os voos realizados.
+	measure 'Atraso Médio (min)' =
+			AVERAGE( fVoos[atraso_minutos] )
+		formatString: #,0.0
+		lineageTag: 6f8efbac-805d-41e0-bd0b-1dc64b372f3c
+		displayFolder: 01 Operação
+
+	/// Minutos medios de atraso apenas entre os voos classificados como atrasados.
+	measure 'Atraso Médio dos Atrasados (min)' =
+			CALCULATE( AVERAGE( fVoos[atraso_minutos] ), fVoos[situacao_voo] = "Atrasado" )
+		formatString: #,0.0
+		lineageTag: 108d49d5-cf4a-4194-a95e-78cff83b37e1
+		displayFolder: 01 Operação
+
+	/// Maior atraso registrado no contexto analisado.
+	measure 'Atraso Máximo (min)' =
+			MAX( fVoos[atraso_minutos] )
+		formatString: #,0
+		lineageTag: 9c948dc4-70c5-4f8a-a3b6-c98c1ac424ad
+		displayFolder: 01 Operação
+
+	/// Soma total de minutos de atraso acumulados no periodo.
+	measure 'Minutos Perdidos' =
+			SUM( fVoos[atraso_minutos] )
+		formatString: #,0
+		lineageTag: 7bcd92fa-faaf-4b72-a47e-2f902f840c56
+		displayFolder: 01 Operação
+
+	/// Tempo medio de voo em minutos.
+	measure 'Duração Média (min)' =
+			AVERAGE( fVoos[duracao_minutos] )
+		formatString: #,0
+		lineageTag: 9ccb48d7-9ec5-4034-b3c0-eb1cc0aa20e5
+		displayFolder: 01 Operação
+
+	/// Total de passageiros transportados.
+	measure 'Total de Passageiros' =
+			SUM( fVoos[passageiros] )
+		formatString: #,0
+		lineageTag: 9ab165c7-86e1-428d-9313-5c4617be6669
+		displayFolder: 02 Demanda
+
+	/// Total de assentos disponibilizados nos voos realizados.
+	measure 'Assentos Ofertados' =
+			CALCULATE( SUM( fVoos[capacidade_aeronave] ), fVoos[situacao_voo] <> "Cancelado" )
+		formatString: #,0
+		lineageTag: c0b2f7bf-5246-437b-9f5c-0ef90693b7be
+		displayFolder: 02 Demanda
+
+	/// Passageiros transportados sobre assentos ofertados (load factor).
+	measure 'Taxa de Ocupação' =
+			DIVIDE( [Total de Passageiros], [Assentos Ofertados] )
+		formatString: 0.0%
+		lineageTag: 2ccbd95c-66ef-4ba2-b774-0865d874e85a
+		displayFolder: 02 Demanda
+
+	/// Assentos ofertados que nao foram ocupados.
+	measure 'Assentos Vazios' =
+			[Assentos Ofertados] - [Total de Passageiros]
+		formatString: #,0
+		lineageTag: a647be40-06d6-4af8-a758-cd651f313489
+		displayFolder: 02 Demanda
+
+	/// Media de passageiros por voo realizado.
+	measure 'Passageiros por Voo' =
+			DIVIDE( [Total de Passageiros], [Voos Realizados] )
+		formatString: #,0
+		lineageTag: b0d9456f-7599-4234-9cda-290eef43a5e9
+		displayFolder: 02 Demanda
+
+	/// Distancia media das rotas operadas.
+	measure 'Distância Média (km)' =
+			AVERAGE( fVoos[distancia_km] )
+		formatString: #,0
+		lineageTag: 137a1bc1-e801-4785-8c1a-454978418759
+		displayFolder: 02 Demanda
+
+	/// Receita por passageiro-quilometro: mede o volume real de transporte.
+	measure 'RPK (passageiro-km)' =
+			SUMX( fVoos, fVoos[passageiros] * fVoos[distancia_km] )
+		formatString: #,0
+		lineageTag: 8c742751-17e6-4f25-9e1a-fe3731403172
+		displayFolder: 02 Demanda
+
+	/// Receita bruta gerada pelos voos.
+	measure 'Receita Total' =
+			SUM( fVoos[receita_voo] )
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: 59ca750a-f181-4197-a913-a29e04a958b7
+		displayFolder: 03 Financeiro
+
+	/// Custo operacional total dos voos.
+	measure 'Custo Total' =
+			SUM( fVoos[custo_voo] )
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: 11c1a62a-95b8-4229-a2de-7c29977e0f32
+		displayFolder: 03 Financeiro
+
+	/// Resultado financeiro: receita menos custo.
+	measure 'Lucro Total' =
+			[Receita Total] - [Custo Total]
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: 091798e6-7f2e-4bcb-bd55-7d0858b1dbcd
+		displayFolder: 03 Financeiro
+
+	/// Percentual do lucro sobre a receita.
+	measure 'Margem de Lucro' =
+			DIVIDE( [Lucro Total], [Receita Total] )
+		formatString: 0.0%
+		lineageTag: 4ad65d11-7193-47dd-a5e8-1489b99d3887
+		displayFolder: 03 Financeiro
+
+	/// Receita media por passageiro transportado.
+	measure 'Ticket Médio' =
+			DIVIDE( [Receita Total], [Total de Passageiros] )
+		formatString: "R$" #,0.00;-"R$" #,0.00
+		lineageTag: 8f23bdd6-9a91-4e48-81ab-ed9d562c4bc0
+		displayFolder: 03 Financeiro
+
+	/// Preco medio praticado nas passagens.
+	measure 'Preço Médio da Passagem' =
+			AVERAGE( fVoos[preco_medio_passagem] )
+		formatString: "R$" #,0.00;-"R$" #,0.00
+		lineageTag: 07e781ce-663a-4f77-acc3-478a4d8fae22
+		displayFolder: 03 Financeiro
+
+	/// Resultado financeiro medio de cada voo realizado.
+	measure 'Lucro Médio por Voo' =
+			DIVIDE( [Lucro Total], [Voos Realizados] )
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: 1f1641d3-5ebf-4ea3-b4bd-7bed20af95af
+		displayFolder: 03 Financeiro
+
+	/// Receita obtida por passageiro transportado a cada quilometro.
+	measure 'Yield (R$/km)' =
+			DIVIDE( [Receita Total], [RPK (passageiro-km)] )
+		formatString: "R$" #,0.000
+		lineageTag: c741129e-9f33-48a6-b610-1d391bfa52dc
+		displayFolder: 03 Financeiro
+
+	/// Voos realizados que fecharam com prejuizo.
+	measure 'Voos Deficitários' =
+			CALCULATE( [Total de Voos], fVoos[lucro_voo] < 0, fVoos[situacao_voo] <> "Cancelado" )
+		formatString: #,0
+		lineageTag: e37626ad-bac4-498e-8155-e43a221aeb5f
+		displayFolder: 03 Financeiro
+
+	/// Participacao dos voos que deram prejuizo.
+	measure '% Voos Deficitários' =
+			DIVIDE( [Voos Deficitários], [Voos Realizados] )
+		formatString: 0.0%
+		lineageTag: e838488b-b5ab-4c2d-9add-459e06c1269d
+		displayFolder: 03 Financeiro
+
+	/// Soma dos resultados negativos, em valor absoluto.
+	measure 'Prejuízo Acumulado' =
+			ABS( CALCULATE( SUM( fVoos[lucro_voo] ), fVoos[lucro_voo] < 0 ) )
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: d236836c-8163-4310-83a3-789d4d31df0c
+		displayFolder: 03 Financeiro
+
+	/// Nota media de satisfacao dos passageiros, de 1 a 5.
+	measure 'Satisfação Média' =
+			AVERAGE( fVoos[satisfacao_passageiros] )
+		formatString: 0.00
+		lineageTag: bc04c33e-3aef-4a62-a3dd-a61831796715
+		displayFolder: 04 Satisfação
+
+	/// Participacao dos voos com nota de satisfacao igual ou superior a 4.
+	measure '% Satisfação Alta' =
+			VAR _altos =
+			    CALCULATE( [Total de Voos], fVoos[satisfacao_passageiros] >= 4 )
+			RETURN
+			    DIVIDE( _altos, [Voos Realizados] )
+		formatString: 0.0%
+		lineageTag: 2fc25325-46c9-4a45-a181-c3c8594ad1c3
+		displayFolder: 04 Satisfação
+
+	/// Receita do mes imediatamente anterior.
+	measure 'Receita Mês Anterior' =
+			CALCULATE( [Receita Total], DATEADD( dCalendario[Date], -1, MONTH ) )
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: 9b4bd0d4-82ca-4d5e-810d-4ed0e6c340ab
+		displayFolder: 05 Comparativos
+
+	/// Variacao percentual da receita em relacao ao mes anterior.
+	measure 'Variação Receita MoM' =
+			VAR _ant = [Receita Mês Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Receita Total] - _ant, _ant ) )
+		formatString: 0.0%
+		lineageTag: 73b7cec1-3d3c-40d0-870c-1010acd24aa2
+		displayFolder: 05 Comparativos
+
+	/// Passageiros transportados no mes anterior.
+	measure 'Passageiros Mês Anterior' =
+			CALCULATE( [Total de Passageiros], DATEADD( dCalendario[Date], -1, MONTH ) )
+		formatString: #,0
+		lineageTag: 92cfe8e3-815c-459f-bcb1-89c797410642
+		displayFolder: 05 Comparativos
+
+	/// Variacao percentual de passageiros em relacao ao mes anterior.
+	measure 'Variação Passageiros MoM' =
+			VAR _ant = [Passageiros Mês Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Total de Passageiros] - _ant, _ant ) )
+		formatString: 0.0%
+		lineageTag: a97af46b-2745-485c-adca-7b763572b1c8
+		displayFolder: 05 Comparativos
+
+	/// Receita registrada no mesmo periodo do ano anterior.
+	measure 'Receita Ano Anterior' =
+			CALCULATE( [Receita Total], SAMEPERIODLASTYEAR( dCalendario[Date] ) )
+		formatString: "R$" #,0;-"R$" #,0
+		lineageTag: 71068e6e-e998-4b0f-a14d-abbd7f355cf8
+		displayFolder: 05 Comparativos
+
+	/// Variacao percentual da receita contra o mesmo periodo do ano anterior.
+	measure 'Variação Receita YoY' =
+			VAR _ant = [Receita Ano Anterior]
+			RETURN
+			    IF( NOT ISBLANK( _ant ), DIVIDE( [Receita Total] - _ant, _ant ) )
+		formatString: 0.0%
+		lineageTag: 6a76168d-49ab-4112-98e6-a8f1fd928f88
+		displayFolder: 05 Comparativos
+
+	/// Media movel de passageiros dos ultimos tres meses, usada para suavizar a tendencia.
+	measure 'Média Móvel 3M Passageiros' =
+			AVERAGEX(
+			    DATESINPERIOD( dCalendario[Date], MAX( dCalendario[Date] ), -3, MONTH ),
+			    CALCULATE( [Total de Passageiros] )
+			)
+		formatString: #,0
+		lineageTag: b9a922c0-a17f-4ea8-b976-e0eb5ac873ee
+		displayFolder: 05 Comparativos
+
+	/// Posicao da rota no ranking de passageiros transportados.
+	measure 'Ranking de Rotas por Passageiros' =
+			IF(
+			    HASONEVALUE( fVoos[rota] ),
+			    RANKX( ALLSELECTED( fVoos[rota] ), [Total de Passageiros], , DESC, DENSE )
+			)
+		formatString: #,0
+		lineageTag: c7bd7bd0-e1d4-4ee7-9e53-c7921039b5fe
+		displayFolder: 06 Apoio
+
+	/// Peso da categoria selecionada sobre o total de passageiros exibido.
+	measure 'Participação no Total de Passageiros' =
+			DIVIDE(
+			    [Total de Passageiros],
+			    CALCULATE( [Total de Passageiros], ALLSELECTED( fVoos ) )
+			)
+		formatString: 0.0%
+		lineageTag: 4a82374c-6346-420a-9b88-c76eb790b30e
+		displayFolder: 06 Apoio
+
+	/// Cor condicional para o indicador de pontualidade: verde, ambar ou vermelho.
+	measure 'Cor Semáforo Pontualidade' =
+			VAR _p = [% Pontualidade]
+			RETURN
+			    SWITCH( TRUE(),
+			        _p >= 0.75, "#2E9B6B",
+			        _p >= 0.65, "#E8A33D",
+			        "#D1495B"
+			    )
+		lineageTag: 29813f0b-e261-414c-acd1-7554250ce896
+		displayFolder: 06 Apoio
+
+	/// Cor condicional para o indicador de margem de lucro.
+	measure 'Cor Semáforo Margem' =
+			VAR _m = [Margem de Lucro]
+			RETURN
+			    SWITCH( TRUE(),
+			        _m >= 0.12, "#2E9B6B",
+			        _m >= 0.05, "#E8A33D",
+			        "#D1495B"
+			    )
+		lineageTag: e8c89e8f-fbfe-48d3-a8ce-aa4eb2517bb4
+		displayFolder: 06 Apoio
+
+	column Value
+		isHidden
+		formatString: 0
+		lineageTag: 912d1a56-3129-4aed-a01f-e30b77b73417
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Value]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Medidas = calculated
+		mode: import
+		source = {BLANK()}
+
+	annotation PBI_Id = _Medidas

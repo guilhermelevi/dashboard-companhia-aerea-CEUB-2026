@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "CompanhiaAerea"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "b40013e9-0a02-40b6-8666-8cbbb1a27659"
+  }
+}

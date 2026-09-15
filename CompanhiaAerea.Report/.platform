@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "CompanhiaAerea"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9d8a1213-ad17-44c3-8259-1313f8bddc3c"
+  }
+}
